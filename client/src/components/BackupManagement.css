@@ -1,0 +1,236 @@
+.backup-management {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.backup-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.backup-header h1 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.backup-header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.backup-overview {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+}
+
+.current-plan h3 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.usage-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.usage-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background: var(--background-light);
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.backup-plans {
+  margin-bottom: 2rem;
+}
+
+.backup-plans h3 {
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.plan-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.plan-card.current {
+  border-color: var(--primary-color);
+  box-shadow: 0 6px 12px rgba(32, 178, 170, 0.2);
+}
+
+.plan-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.plan-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.plan-header h4 {
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.plan-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.plan-features {
+  margin-bottom: 1.5rem;
+}
+
+.feature {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--background-light);
+}
+
+.feature:last-child {
+  border-bottom: none;
+}
+
+.feature span:first-child {
+  color: var(--text-secondary);
+}
+
+.feature span:last-child {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.upgrade-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.upgrade-btn:hover {
+  background: var(--primary-dark);
+}
+
+.backup-settings {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+}
+
+.backup-settings h3 {
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.setting-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--background-light);
+}
+
+.setting-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.setting-section h4 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.setting-form {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.setting-form input,
+.setting-form select {
+  padding: 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.setting-form input:focus,
+.setting-form select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(32, 178, 170, 0.1);
+}
+
+.setting-form button {
+  padding: 0.75rem 1.5rem;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.setting-form button:hover {
+  background: var(--accent-dark);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .backup-management {
+    padding: 1rem;
+  }
+  
+  .plans-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .setting-form {
+    flex-direction: column;
+  }
+  
+  .setting-form input,
+  .setting-form select,
+  .setting-form button {
+    width: 100%;
+  }
+  
+  .usage-stats {
+    grid-template-columns: 1fr;
+  }
+}
+

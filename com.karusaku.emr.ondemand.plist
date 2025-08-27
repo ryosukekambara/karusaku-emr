@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.karusaku.emr.ondemand</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/node</string>
+        <string>/Users/kanbararyousuke/Projects/myapp/server.js</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/kanbararyousuke/Projects/myapp</string>
+    
+    <key>RunAtLoad</key>
+    <false/>
+    
+    <key>KeepAlive</key>
+    <dict>
+        <key>NetworkState</key>
+        <true/>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+    
+    <key>Sockets</key>
+    <dict>
+        <key>Listeners</key>
+        <dict>
+            <key>SockServiceName</key>
+            <string>3001</string>
+            <key>SockType</key>
+            <string>stream</string>
+        </dict>
+    </dict>
+    
+    <key>StandardOutPath</key>
+    <string>/Users/kanbararyousuke/Projects/myapp/logs/ondemand.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/kanbararyousuke/Projects/myapp/logs/ondemand-error.log</string>
+    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>NODE_ENV</key>
+        <string>production</string>
+        <key>PORT</key>
+        <string>3001</string>
+    </dict>
+</dict>
+</plist>

@@ -1,0 +1,184 @@
+version: '3.8'
+
+services:
+  # メインアプリケーション（段階的拡張対応）
+  karusaku-emr:
+    build: .
+    container_name: karusaku-emr-app
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
+      - JWT_EXPIRES_IN=24h
+      - BCRYPT_ROUNDS=12
+      - RATE_LIMIT_WINDOW=15
+      - RATE_LIMIT_MAX=100
+      - LOG_LEVEL=info
+      - SQLITE_PATH=/app/data/medical_records.db
+      - MAX_CONNECTIONS=200
+      - MEMORY_LIMIT=512M
+    volumes:
+      - ./data:/app/data
+      - ./backups:/app/backups
+      - ./logs:/app/logs
+    restart: unless-stopped
+    depends_on:
+      - redis
+    networks:
+      - karusaku-network
+    # 段階的リソース制限（フェーズ1: 1GB RAM）
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1.0'
+        reservations:
+          memory: 256M
+          cpus: '0.5'
+    # ヘルスチェック強化
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis（セッション管理・キャッシュ）
+  redis:
+    image: redis:7-alpine
+    container_name: karusaku-emr-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - karusaku-network
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-karusaku-redis-password} --maxmemory 128mb --maxmemory-policy allkeys-lru
+    # 軽量リソース制限
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.2'
+        reservations:
+          memory: 64M
+          cpus: '0.1'
+
+  # Nginx（高可用性対応）
+  nginx:
+    image: nginx:alpine
+    container_name: karusaku-emr-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.production.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - karusaku-emr
+    restart: unless-stopped
+    networks:
+      - karusaku-network
+    # 軽量リソース制限
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+          cpus: '0.2'
+        reservations:
+          memory: 32M
+          cpus: '0.1'
+
+  # バックアップサービス（高信頼性）
+  backup:
+    image: alpine:latest
+    container_name: karusaku-emr-backup
+    volumes:
+      - ./data:/app/data
+      - ./backups:/app/backups
+    environment:
+      - BACKUP_SCHEDULE=0 2 * * *
+      - BACKUP_RETENTION_DAYS=30
+      - BACKUP_COMPRESSION=true
+    depends_on:
+      - karusaku-emr
+    restart: unless-stopped
+    networks:
+      - karusaku-network
+    # 軽量リソース制限
+    deploy:
+      resources:
+        limits:
+          memory: 32M
+          cpus: '0.05'
+        reservations:
+          memory: 16M
+          cpus: '0.02'
+    command: |
+      sh -c "
+      apk add --no-cache sqlite gzip &&
+      while true; do
+        echo 'Starting backup at $$(date)'
+        cp /app/data/medical_records.db /app/backups/backup_$$(date +%Y%m%d_%H%M%S).db
+        gzip /app/backups/backup_$$(date +%Y%m%d_%H%M%S).db
+        # 30日以上古いバックアップを削除
+        find /app/backups -name 'backup_*.db.gz' -mtime +30 -delete
+        echo 'Backup completed at $$(date)'
+        sleep 86400
+      done
+      "
+
+  # 監視サービス（軽量）
+  monitoring:
+    image: alpine:latest
+    container_name: karusaku-emr-monitoring
+    volumes:
+      - ./logs:/app/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - ALERT_EMAIL=${ALERT_EMAIL:-admin@karusaku.com}
+      - DISK_THRESHOLD=80
+      - MEMORY_THRESHOLD=80
+    depends_on:
+      - karusaku-emr
+    restart: unless-stopped
+    networks:
+      - karusaku-network
+    # 軽量リソース制限
+    deploy:
+      resources:
+        limits:
+          memory: 16M
+          cpus: '0.02'
+        reservations:
+          memory: 8M
+          cpus: '0.01'
+    command: |
+      sh -c "
+      apk add --no-cache curl jq &&
+      while true; do
+        # ディスク使用量チェック
+        DISK_USAGE=$$(df /app/logs | tail -1 | awk '{print $$5}' | sed 's/%//')
+        if [ $$DISK_USAGE -gt 80 ]; then
+          echo 'WARNING: Disk usage is $$DISK_USAGE%' >> /app/logs/monitoring.log
+        fi
+        
+        # アプリケーション応答チェック
+        if ! curl -f -s http://karusaku-emr:3001/health > /dev/null; then
+          echo 'ERROR: Application is not responding' >> /app/logs/monitoring.log
+        fi
+        
+        sleep 300
+      done
+      "
+
+volumes:
+  redis_data:
+
+networks:
+  karusaku-network:
+    driver: bridge

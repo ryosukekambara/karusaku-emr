@@ -1,0 +1,465 @@
+.dashboard {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  /* スクロール最適化 */
+  will-change: scroll-position;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* プルダウン最適化 */
+.month-select {
+  /* スクロール最適化 */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* 患者一覧のスクロール最適化 */
+.patient-list {
+  max-height: 70vh;
+  overflow-y: auto;
+  /* スクロール最適化 */
+  will-change: scroll-position;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.dashboard-header h1 {
+  color: var(--primary-color);
+  margin: 0;
+  font-size: 2rem;
+}
+
+.dashboard-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.dashboard-actions .btn {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+.month-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.month-selector label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.month-select {
+  padding: 0.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background-color: var(--white);
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.month-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(32, 178, 170, 0.1);
+}
+
+/* 統計サマリー */
+.stats-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.stat-card h3 {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.stat-breakdown {
+  display: flex;
+  justify-content: space-around;
+  font-size: 0.9rem;
+}
+
+.new-patients {
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+.existing-patients {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+/* チャートセクション */
+.chart-section {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+}
+
+.chart-section h2 {
+  color: var(--text-primary);
+  margin: 0 0 20px 0;
+  font-size: 1.5rem;
+}
+
+.chart-container {
+  position: relative;
+  overflow: hidden;
+  padding: 0 10px;
+}
+
+.chart {
+  display: flex;
+  align-items: end;
+  justify-content: space-around;
+  height: 300px;
+  padding: 20px 20px 20px 20px;
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.chart-bar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  max-width: 60px;
+  min-width: 50px;
+  padding: 0 5px;
+}
+
+.chart-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+
+.chart-bar {
+  width: 100%;
+  min-height: 20px;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.chart-bar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.new-patients-bar {
+  background: linear-gradient(135deg, var(--accent-color), #ff8c42);
+}
+
+.existing-patients-bar {
+  background: linear-gradient(135deg, var(--primary-color), #1a9ba8);
+}
+
+.chart-value {
+  color: white;
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.chart-label {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+}
+
+.new-patients-color {
+  background: var(--accent-color);
+}
+
+.existing-patients-color {
+  background: var(--primary-color);
+}
+
+/* 施術者統計 */
+.therapist-stats {
+  margin-top: 20px;
+}
+
+.therapist-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.therapist-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.therapist-info {
+  flex: 1;
+}
+
+.therapist-info h3 {
+  color: var(--primary-color);
+  margin: 0 0 5px 0;
+  font-size: 1.2rem;
+}
+
+.specialty {
+  color: var(--text-secondary);
+  margin: 0 0 15px 0;
+  font-size: 0.9rem;
+}
+
+.therapist-stats-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.stat-label {
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.therapist-chart {
+  margin-left: 20px;
+}
+
+.pie-chart {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pie-center {
+  width: 50px;
+  height: 50px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.percentage {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* クイックアクセス */
+.quick-access {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+}
+
+.quick-access h2 {
+  color: var(--text-primary);
+  margin: 0 0 20px 0;
+  font-size: 1.5rem;
+}
+
+.quick-access-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.quick-access-card {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 12px;
+  padding: 20px;
+  text-decoration: none;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.quick-access-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, var(--primary-color), #1a9ba8);
+  color: white;
+}
+
+.quick-access-card:hover .card-icon {
+  transform: scale(1.1);
+}
+
+.card-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  transition: transform 0.3s ease;
+}
+
+.quick-access-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+}
+
+.quick-access-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* ローディング */
+.loading {
+  text-align: center;
+  padding: 50px;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 15px;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .dashboard-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .stats-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .chart {
+    height: 200px;
+    padding: 15px 10px;
+  }
+  
+  .chart-bar-container {
+    max-width: 40px;
+    min-width: 35px;
+    padding: 0 2px;
+  }
+  
+  .chart-label {
+    font-size: 0.7rem;
+  }
+  
+  .therapist-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .therapist-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .therapist-chart {
+    margin-left: 0;
+    margin-top: 15px;
+  }
+  
+  .quick-access-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
