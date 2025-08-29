@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import './Login.css';
 
 interface LoginProps {
-  onLogin: (user: any, token: string) => void;
+  onLogin: (username: string, password: string) => Promise<boolean>;
+  securityAlert?: string | null;
 }
 
-const Login: React.FC<LoginProps> = ({ onLogin }) => {
+const Login: React.FC<LoginProps> = ({ onLogin, securityAlert }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -16,27 +17,13 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     setError('');
     setLoading(true);
 
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        onLogin(data.user, data.token);
-      } else {
-        setError(data.error || 'ログインに失敗しました');
-      }
-    } catch (err) {
-      setError('ネットワークエラーが発生しました');
-    } finally {
-      setLoading(false);
+    const success = await onLogin(username, password);
+    if (!success) {
+      // エラーメッセージはApp.tsxで設定されるので、ここでは設定しない
+      console.log('Login failed');
     }
+    
+    setLoading(false);
   };
 
   return (
@@ -56,17 +43,23 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           </div>
         </div>
 
+        {securityAlert && (
+          <div className="security-alert">
+            <span>{securityAlert}</span>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
             <label htmlFor="username">ユーザー名</label>
-                          <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="staff0"
-                required
-              />
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="staff0"
+              required
+            />
           </div>
 
           <div className="form-group">
@@ -88,17 +81,17 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           </button>
         </form>
 
-                  <div className="login-info">
-            <h3>ログイン情報</h3>
-            <div className="user-list">
-              <div className="user-item master">
-                <strong>マスター権限:</strong> staff0 / staff0
-              </div>
-              <div className="user-item">
-                <strong>スタッフ権限:</strong> staff1 / staff1
-              </div>
+        <div className="login-info">
+          <h3>ログイン情報</h3>
+          <div className="user-list">
+            <div className="user-item master">
+              <strong>マスター権限:</strong> staff0 / staff0
+            </div>
+            <div className="user-item">
+              <strong>スタッフ権限:</strong> staff1 / staff1
             </div>
           </div>
+        </div>
       </div>
     </div>
   );

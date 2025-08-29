@@ -1,0 +1,79 @@
+exports.handler = async (event, context) => {
+  // CORSヘッダーを設定
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS'
+  };
+
+  // OPTIONSリクエスト（プリフライト）の処理
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers,
+      body: ''
+    };
+  }
+
+  // GETリクエストの処理
+  if (event.httpMethod === 'GET') {
+    const patients = [
+      {
+        "id": 1,
+        "name": "田中太郎",
+        "kana": "タナカタロウ",
+        "birth_date": "1980-01-15",
+        "gender": "男性",
+        "phone": "090-1234-5678",
+        "email": "tanaka@example.com",
+        "address": "東京都渋谷区1-1-1",
+        "emergency_contact": "田中花子",
+        "emergency_phone": "090-8765-4321",
+        "insurance_type": "国民健康保険",
+        "insurance_card_number": "1234567890",
+        "insurance_holder": "田中太郎",
+        "primary_diagnosis": "腰痛",
+        "is_new_patient": true,
+        "created_at": "2024-08-29T10:00:00Z",
+        "updated_at": "2024-08-29T10:00:00Z"
+      },
+      {
+        "id": 2,
+        "name": "佐藤花子",
+        "kana": "サトウハナコ",
+        "birth_date": "1985-05-20",
+        "gender": "女性",
+        "phone": "080-9876-5432",
+        "email": "sato@example.com",
+        "address": "東京都新宿区2-2-2",
+        "emergency_contact": "佐藤次郎",
+        "emergency_phone": "080-1111-2222",
+        "insurance_type": "社会保険",
+        "insurance_card_number": "0987654321",
+        "insurance_holder": "佐藤花子",
+        "primary_diagnosis": "肩こり",
+        "is_new_patient": false,
+        "created_at": "2024-08-28T15:30:00Z",
+        "updated_at": "2024-08-29T09:15:00Z"
+      }
+    ];
+
+    return {
+      statusCode: 200,
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(patients)
+    };
+  }
+
+  // その他のHTTPメソッド
+  return {
+    statusCode: 405,
+    headers,
+    body: JSON.stringify({
+      error: 'Method not allowed'
+    })
+  };
+};

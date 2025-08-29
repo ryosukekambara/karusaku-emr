@@ -25,7 +25,26 @@ interface TherapistStats {
   repeat_rate: number;
 }
 
+interface DashboardData {
+  totalPatients: number;
+  newPatientsThisMonth: number;
+  totalAppointments: number;
+  totalRevenue: number;
+  monthlyStats: {
+    patients: number[];
+    revenue: number[];
+    appointments: number[];
+  };
+  recentPatients: Array<{
+    id: number;
+    name: string;
+    lastVisit: string;
+    nextAppointment: string;
+  }>;
+}
+
 const Dashboard: React.FC = () => {
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [patients, setPatients] = useState<any[]>([]);
   const [monthlyStats, setMonthlyStats] = useState<MonthlyStats | null>(null);
   const [todayStats, setTodayStats] = useState<TodayStats | null>(null);
@@ -43,43 +62,38 @@ const Dashboard: React.FC = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const token = localStorage.getItem('token');
-      const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+      setLoading(true);
+      
+      // オフラインモックデータ（APIリクエストなし）
+      const mockData: DashboardData = {
+        totalPatients: 150,
+        newPatientsThisMonth: 25,
+        totalAppointments: 320,
+        totalRevenue: 2500000,
+        monthlyStats: {
+          patients: [120, 135, 142, 150],
+          revenue: [1800000, 2000000, 2200000, 2500000],
+          appointments: [280, 300, 310, 320]
+        },
+        recentPatients: [
+          {
+            id: 1,
+            name: "田中太郎",
+            lastVisit: "2024-08-29",
+            nextAppointment: "2024-09-05"
+          },
+          {
+            id: 2,
+            name: "佐藤花子",
+            lastVisit: "2024-08-28",
+            nextAppointment: "2024-09-02"
+          }
+        ]
       };
 
-      // 並列でデータ取得
-      const [patientsResponse, todayResponse, trendResponse, therapistResponse] = await Promise.all([
-        fetch('/api/patients', { headers }),
-        fetch('/api/statistics/today', { headers }),
-        fetch('/api/statistics/monthly-trend', { headers }),
-        fetch('/api/statistics/therapists', { headers })
-      ]);
-
-      const [patientsData, todayData, trendData, therapistData] = await Promise.all([
-        patientsResponse.json(),
-        todayResponse.json(),
-        trendResponse.json(),
-        therapistResponse.json()
-      ]);
-
-      setPatients(patientsData);
-      setTodayStats(todayData);
-      setMonthlyTrend(trendData);
-      setTherapistStats(therapistData);
-
-      // 当月統計取得
-      const currentDate = new Date();
-      const currentMonth = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}`;
-      setSelectedMonth(currentMonth);
-      
-      const monthlyResponse = await fetch(`/api/statistics/monthly?year=${currentDate.getFullYear()}&month=${currentDate.getMonth() + 1}`, { headers });
-      const monthlyData = await monthlyResponse.json();
-      setMonthlyStats(monthlyData);
-
+      setDashboardData(mockData);
     } catch (error) {
-      console.error('データ取得エラー:', error);
+      console.error('ダッシュボードデータの取得エラー:', error);
     } finally {
       setLoading(false);
     }

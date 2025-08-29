@@ -1,0 +1,9 @@
+{
+  "token": "mock-jwt-token",
+  "user": {
+    "username": "staff0",
+    "name": "マスター",
+    "role": "master",
+    "department": "管理部"
+  }
+}
