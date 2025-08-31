@@ -117,12 +117,18 @@ body {
 
 /* サイドバー */
 .sidebar {
-  width: var(--sidebar-width);
-  background: var(--white);
-  border-right: 1px solid var(--border-color);
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  overflow-y: auto;
+  width: 280px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  z-index: 1000;
 }
 
 .sidebar-menu {
@@ -206,9 +212,10 @@ body {
 /* メインコンテンツ */
 .main-content {
   flex: 1;
-  padding: 2rem;
-  background: var(--background-light);
+  padding: 20px;
+  background-color: #f5f5f5;
   overflow-y: auto;
+  margin-left: 0;
 }
 
 .container {
@@ -2213,19 +2220,19 @@ body {
   }
 
   .sidebar {
-    position: fixed;
-    top: 0;
-    left: -100%;
-    width: 280px;
-    height: 100vh;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: none;
+    height: auto;
+    position: relative;
+    top: auto;
+    transition: none;
+    width: 100%;
     z-index: 1000;
-    transition: left 0.3s ease;
-    background: var(--white);
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   }
 
+  .sidebar,
   .sidebar.open {
-    left: 0;
+    left: auto;
   }
 
   .main-content {
@@ -2546,6 +2553,7 @@ body {
 /* アプリレイアウト */
 .app-layout {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
@@ -2558,32 +2566,33 @@ body {
 
 /* サイドバー */
 .sidebar {
-  width: 280px;
+  width: 100%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 20px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  order: -1;
 }
 
 .sidebar-header {
   text-align: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .sidebar-header h2 {
-  margin: 0 0 8px 0;
-  font-size: 24px;
+  margin: 0 0 6px 0;
+  font-size: 20px;
   font-weight: 700;
 }
 
 .sidebar-header p {
   margin: 0;
   opacity: 0.8;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .sidebar-nav {
@@ -2593,17 +2602,17 @@ body {
 .sidebar-item {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  margin: 4px 0;
+  padding: 10px 12px;
+  margin: 3px 0;
   color: white;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 6px;
   transition: all 0.3s ease;
 }
 
 .sidebar-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
-  transform: translateX(4px);
+  transform: translateX(2px);
 }
 
 .sidebar-item.active {
@@ -2612,14 +2621,14 @@ body {
 }
 
 .sidebar-icon {
-  margin-right: 12px;
-  font-size: 18px;
-  width: 20px;
+  margin-right: 10px;
+  font-size: 16px;
+  width: 18px;
   text-align: center;
 }
 
 .sidebar-label {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .sidebar-footer {
@@ -2657,33 +2666,4 @@ body {
 
 .logout-btn:hover {
   background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* レスポンシブデザイン */
-@media (max-width: 768px) {
-  .app-layout {
-    flex-direction: column;
-  }
-  
-  .sidebar {
-    width: 100%;
-    padding: 15px;
-  }
-  
-  .main-content {
-    padding: 15px;
-  }
-  
-  .sidebar-item {
-    padding: 10px 12px;
-  }
-  
-  .sidebar-icon {
-    font-size: 16px;
-    margin-right: 10px;
-  }
-  
-  .sidebar-label {
-    font-size: 13px;
-  }
 }
