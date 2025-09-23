@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Lock } from 'lucide-react';
 import './ReceiptManagement.css';
 
 interface ReceiptData {
@@ -184,7 +185,7 @@ const ReceiptManagement: React.FC = () => {
     return (
       <div className="receipt-management-container">
         <div className="receipt-header">
-          <h1>🔒 レセプト管理</h1>
+          <h1><Lock size={24} /> レセプト管理</h1>
           <div className="premium-badge">
             <span>プレミアム機能</span>
           </div>
@@ -207,7 +208,7 @@ const ReceiptManagement: React.FC = () => {
   return (
     <div className="receipt-management-container">
       <div className="receipt-header">
-        <h1>🔒 レセプト管理</h1>
+        <h1><Lock size={24} /> レセプト管理</h1>
         <div className="premium-badge">
           <span>プレミアム機能</span>
         </div>

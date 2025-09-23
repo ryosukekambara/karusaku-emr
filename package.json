@@ -35,7 +35,9 @@
   "license": "MIT",
   "description": "カルサク - 医療機関向け電子カルテシステム (超低コストSaaS対応)",
   "dependencies": {
+    "@line/bot-sdk": "^7.5.2",
     "archiver": "^6.0.1",
+    "axios": "^1.12.2",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
     "cors": "^2.8.5",

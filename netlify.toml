@@ -10,12 +10,3 @@
 
 [build.environment]
   NODE_VERSION = "18"
-
-# パスワード保護設定
-[[plugins]]
-  package = "@netlify/plugin-password-protect"
-
-[plugins.inputs]
-  password = "karusaku2024"
-  message = "このアプリケーションは社内専用です。パスワードを入力してください。"
-  language = "ja"

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { Download, Upload } from 'lucide-react';
 
 interface Patient {
   id: number;
@@ -230,40 +231,45 @@ const PatientList: React.FC = () => {
 
       {/* 検索・フィルター */}
       <div className="search-filter-section">
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="名前・ID、電話番号で検索..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="form-control"
-          />
-        </div>
-        <div className="date-filter">
-          <div className="date-input-group">
-            <label>最終来店日:</label>
+        <div className="search-controls">
+          <div className="search-box">
             <input
-              type="date"
+              type="text"
+              placeholder="名前・ID、電話番号で検索..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="form-control"
-              placeholder="開始日"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <span>〜</span>
-            <input
-              type="date"
-              className="form-control"
-              placeholder="終了日"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
             />
           </div>
+          <div className="date-filter">
+            <div className="date-input-group">
+              <label>最終来店日:</label>
+              <input
+                type="date"
+                className="form-control"
+                placeholder="開始日"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <span>〜</span>
+              <input
+                type="date"
+                className="form-control"
+                placeholder="終了日"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+          </div>
         </div>
+        
         <div className="action-buttons">
           <button onClick={handleCSVDownload} className="btn btn-secondary">
+            <Download size={16} />
             CSVダウンロード
           </button>
           <label htmlFor="csv-upload" className="btn btn-secondary">
+            <Upload size={16} />
             CSVインポート
             <input
               id="csv-upload"
@@ -274,6 +280,7 @@ const PatientList: React.FC = () => {
             />
           </label>
         </div>
+        
         <div className="filter-buttons">
           <button
             className={`filter-btn ${filterType === 'all' ? 'active' : ''}`}

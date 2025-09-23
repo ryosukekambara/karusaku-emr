@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { FileText } from 'lucide-react';
 
 interface Therapist {
   id: number;
@@ -291,7 +292,7 @@ const AddMedicalRecord: React.FC = () => {
                 onClick={copyLastRecord}
                 className="btn btn-secondary copy-last-record-btn"
               >
-                📋 前回分をコピー
+                <FileText size={16} /> 前回分をコピー
               </button>
             </div>
           )}

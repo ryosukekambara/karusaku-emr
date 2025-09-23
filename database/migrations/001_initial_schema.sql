@@ -113,6 +113,48 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 給与計算システム用テーブル
+-- 従業員テーブル
+CREATE TABLE IF NOT EXISTS employees (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    position VARCHAR(50),
+    hourly_rate DECIMAL(10,2) DEFAULT 0,
+    commission_rate DECIMAL(5,2) DEFAULT 0,
+    phone VARCHAR(20),
+    email VARCHAR(255),
+    status VARCHAR(20) DEFAULT 'active',
+    hire_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 給与計算履歴テーブル
+CREATE TABLE IF NOT EXISTS wage_calculations (
+    id SERIAL PRIMARY KEY,
+    employee_id INTEGER REFERENCES employees(id) ON DELETE CASCADE,
+    base_salary DECIMAL(10,2) DEFAULT 0,
+    treatment_commission DECIMAL(10,2) DEFAULT 0,
+    product_commission DECIMAL(10,2) DEFAULT 0,
+    overtime_pay DECIMAL(10,2) DEFAULT 0,
+    bonus DECIMAL(10,2) DEFAULT 0,
+    gross_salary DECIMAL(10,2) DEFAULT 0,
+    deductions DECIMAL(10,2) DEFAULT 0,
+    net_salary DECIMAL(10,2) DEFAULT 0,
+    calculation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- OCR解析履歴テーブル
+CREATE TABLE IF NOT EXISTS ocr_analyses (
+    id SERIAL PRIMARY KEY,
+    employee_id INTEGER REFERENCES employees(id) ON DELETE CASCADE,
+    image_data TEXT,
+    extracted_data JSONB,
+    analysis_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- インデックス作成
 CREATE INDEX IF NOT EXISTS idx_patients_name ON patients(name);
 CREATE INDEX IF NOT EXISTS idx_patients_date_of_birth ON patients(date_of_birth);
@@ -120,6 +162,10 @@ CREATE INDEX IF NOT EXISTS idx_medical_records_patient_id ON medical_records(pat
 CREATE INDEX IF NOT EXISTS idx_medical_records_visit_date ON medical_records(visit_date);
 CREATE INDEX IF NOT EXISTS idx_appointments_date ON appointments(appointment_date);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at);
+CREATE INDEX IF NOT EXISTS idx_employees_name ON employees(name);
+CREATE INDEX IF NOT EXISTS idx_wage_calculations_employee_id ON wage_calculations(employee_id);
+CREATE INDEX IF NOT EXISTS idx_wage_calculations_date ON wage_calculations(calculation_date);
+CREATE INDEX IF NOT EXISTS idx_ocr_analyses_employee_id ON ocr_analyses(employee_id);
 
 -- 初期データ挿入
 INSERT INTO users (username, password, email, role) VALUES 

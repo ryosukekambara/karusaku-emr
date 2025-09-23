@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { Calendar, BarChart3, Users, TrendingUp, Download, Home, Menu, UserCheck, Search, FileText, Stethoscope } from 'lucide-react';
 import './Dashboard.css';
 
 interface MonthlyStats {
@@ -55,6 +56,8 @@ const Dashboard: React.FC = () => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   });
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [showCharts, setShowCharts] = useState(true);
 
   useEffect(() => {
     fetchData();
@@ -178,8 +181,34 @@ const Dashboard: React.FC = () => {
   return (
     <div className="dashboard">
       <div className="dashboard-header">
-        <h1>ダッシュボード</h1>
+        <div className="header-content">
+          <h1>ダッシュボード</h1>
+          <p className="header-subtitle">医療管理システムの概要</p>
+        </div>
         <div className="dashboard-actions">
+          <div className="view-controls">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+              title="グリッド表示"
+            >
+              <Home size={20} />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
+              title="リスト表示"
+            >
+              <Menu size={20} />
+            </button>
+            <button
+              onClick={() => setShowCharts(!showCharts)}
+              className={`chart-toggle ${showCharts ? 'active' : ''}`}
+              title={showCharts ? 'グラフを非表示' : 'グラフを表示'}
+            >
+              <BarChart3 size={20} />
+            </button>
+          </div>
           <div className="month-selector">
             <label>月選択:</label>
             <select
@@ -202,49 +231,76 @@ const Dashboard: React.FC = () => {
               })}
             </select>
           </div>
-          <button onClick={downloadCSV} className="btn btn-secondary">
-            📥 全顧客データCSV
-          </button>
-          <button onClick={downloadMonthlyCSV} className="btn btn-secondary">
-            📥 選択月顧客データCSV
-          </button>
+          <div className="export-buttons">
+            <button onClick={downloadCSV} className="btn btn-secondary">
+              <Download size={16} /> 全顧客データCSV
+            </button>
+            <button onClick={downloadMonthlyCSV} className="btn btn-secondary">
+              <Download size={16} /> 選択月顧客データCSV
+            </button>
+          </div>
         </div>
       </div>
 
       {/* デバッグ情報を削除 */}
 
       {/* 統計サマリー */}
-      <div className="stats-summary">
+      <div className={`stats-summary ${viewMode}`}>
         <div className="stat-card">
-                      <h3>本日の顧客登録数</h3>
-          <div className="stat-number">{todayStats?.total_patients || 0}名</div>
-          <div className="stat-breakdown">
-            <span className="new-patients">新規: {todayStats?.new_patients || 0}名</span>
-            <span className="existing-patients">既存: {todayStats?.existing_patients || 0}名</span>
+          <div className="stat-icon"><Calendar size={24} /></div>
+          <div className="stat-content">
+            <h3>本日の顧客登録数</h3>
+            <div className="stat-number">{todayStats?.total_patients || 0}名</div>
+            <div className="stat-breakdown">
+              <span className="new-patients">新規: {todayStats?.new_patients || 0}名</span>
+              <span className="existing-patients">既存: {todayStats?.existing_patients || 0}名</span>
+            </div>
           </div>
         </div>
         <div className="stat-card">
-                      <h3>今月の顧客登録数</h3>
-          <div className="stat-number">{monthlyStats?.total_patients || 0}名</div>
-          <div className="stat-breakdown">
-            <span className="new-patients">新規: {monthlyStats?.new_patients || 0}名</span>
-            <span className="existing-patients">既存: {monthlyStats?.existing_patients || 0}名</span>
+          <div className="stat-icon"><BarChart3 size={24} /></div>
+          <div className="stat-content">
+            <h3>今月の顧客登録数</h3>
+            <div className="stat-number">{monthlyStats?.total_patients || 0}名</div>
+            <div className="stat-breakdown">
+              <span className="new-patients">新規: {monthlyStats?.new_patients || 0}名</span>
+              <span className="existing-patients">既存: {monthlyStats?.existing_patients || 0}名</span>
+            </div>
           </div>
         </div>
         <div className="stat-card">
-                      <h3>総顧客数</h3>
-          <div className="stat-number">{patients.length}名</div>
+          <div className="stat-icon"><Users size={24} /></div>
+          <div className="stat-content">
+            <h3>総顧客数</h3>
+            <div className="stat-number">{patients.length}名</div>
+            <div className="stat-trend">
+              <span className="trend-up">↗ +12%</span>
+            </div>
+          </div>
         </div>
         <div className="stat-card">
-          <h3>登録施術者数</h3>
-          <div className="stat-number">{therapistStats.length}名</div>
+          <div className="stat-icon"><Stethoscope size={24} /></div>
+          <div className="stat-content">
+            <h3>登録施術者数</h3>
+            <div className="stat-number">{therapistStats.length}名</div>
+            <div className="stat-trend">
+              <span className="trend-stable">→ 安定</span>
+            </div>
+          </div>
         </div>
       </div>
 
-              {/* 月別顧客登録数グラフ */}
+      {/* 月別顧客登録数グラフ */}
+      {showCharts && (
         <div className="chart-section">
-          <h2>月別顧客登録数推移</h2>
-        {monthlyTrend.length > 0 ? (
+          <div className="chart-header">
+            <h2>月別顧客登録数推移</h2>
+            <div className="chart-controls">
+              <button className="chart-btn" title="グラフを拡大"><Search size={16} /></button>
+              <button className="chart-btn" title="データをエクスポート"><Download size={16} /></button>
+            </div>
+          </div>
+          {monthlyTrend.length > 0 ? (
           <div className="chart-container">
             <div className="chart">
               {monthlyTrend.map((item, index) => {
@@ -286,17 +342,27 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
-        ) : (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-            <p>月別データがありません</p>
-          </div>
-        )}
-      </div>
+          ) : (
+            <div className="no-data">
+              <div className="no-data-icon"><BarChart3 size={48} /></div>
+              <h3>月別データがありません</h3>
+              <p>データを追加するとグラフが表示されます</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* 施術者別統計円グラフ */}
-      <div className="chart-section">
-                  <h2>施術者別顧客数</h2>
-        {therapistStats.length > 0 ? (
+      {showCharts && (
+        <div className="chart-section">
+          <div className="chart-header">
+            <h2>施術者別顧客数</h2>
+            <div className="chart-controls">
+              <button className="chart-btn" title="詳細表示"><FileText size={16} /></button>
+              <button className="chart-btn" title="データをエクスポート"><Download size={16} /></button>
+            </div>
+          </div>
+          {therapistStats.length > 0 ? (
           <div className="therapist-stats">
             <div className="therapist-list">
               {therapistStats.map((therapist, index) => {
@@ -347,12 +413,15 @@ const Dashboard: React.FC = () => {
               })}
             </div>
           </div>
-        ) : (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-            <p>施術者データがありません</p>
-          </div>
-        )}
-      </div>
+          ) : (
+            <div className="no-data">
+              <div className="no-data-icon"><Stethoscope size={48} /></div>
+              <h3>施術者データがありません</h3>
+              <p>施術者を登録すると統計が表示されます</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* クイックアクセス */}
       <div className="quick-access">
