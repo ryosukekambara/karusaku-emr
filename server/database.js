@@ -1,17 +1,52 @@
-const mysql = require('mysql2/promise');
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
 require('dotenv').config();
 
-// データベース接続設定
-const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'medical_records',
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-};
+// SQLiteデータベースファイルのパス
+const dbPath = path.join(__dirname, 'medical_records.db');
 
-// データベース接続プール
-const pool = mysql.createPool(dbConfig);
+// データベース接続
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error('データベース接続エラー:', err.message);
+  } else {
+    console.log('SQLiteデータベースに接続しました');
+  }
+});
+
+// MySQL互換のpoolオブジェクトを作成
+const pool = {
+  execute: (query, params = []) => {
+    return new Promise((resolve, reject) => {
+      if (query.trim().toUpperCase().startsWith('SELECT')) {
+        db.all(query, params, (err, rows) => {
+          if (err) reject(err);
+          else resolve([rows]);
+        });
+      } else {
+        db.run(query, params, function(err) {
+          if (err) reject(err);
+          else resolve([{ insertId: this.lastID }]);
+        });
+      }
+    });
+  },
+  getConnection: () => {
+    return Promise.resolve({
+      execute: pool.execute,
+      release: () => Promise.resolve()
+    });
+  },
+  end: () => {
+    return new Promise((resolve) => {
+      db.close((err) => {
+        if (err) console.error('データベースクローズエラー:', err);
+        else console.log('データベース接続を閉じました');
+        resolve();
+      });
+    });
+  }
+};
 
 // データベース初期化
 async function initializeDatabase() {
@@ -21,50 +56,50 @@ async function initializeDatabase() {
     // スタッフテーブル
     await connection.execute(`
       CREATE TABLE IF NOT EXISTS staff (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        username VARCHAR(50) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        name VARCHAR(100) NOT NULL,
-        role ENUM('master', 'staff') NOT NULL,
-        department VARCHAR(100),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        name TEXT NOT NULL,
+        role TEXT NOT NULL CHECK (role IN ('master', 'staff')),
+        department TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
     // 患者テーブル
     await connection.execute(`
       CREATE TABLE IF NOT EXISTS patients (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        kana VARCHAR(100),
-        birth_date DATE,
-        gender ENUM('male', 'female', 'other'),
-        phone VARCHAR(20),
-        email VARCHAR(100),
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        kana TEXT,
+        birth_date TEXT,
+        gender TEXT CHECK (gender IN ('male', 'female', 'other')),
+        phone TEXT,
+        email TEXT,
         address TEXT,
-        emergency_contact VARCHAR(100),
+        emergency_contact TEXT,
         medical_history TEXT,
         allergies TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
     // 施術記録テーブル
     await connection.execute(`
       CREATE TABLE IF NOT EXISTS medical_records (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        patient_id INT NOT NULL,
-        staff_id INT NOT NULL,
-        treatment_date DATE NOT NULL,
-        treatment_type VARCHAR(100) NOT NULL,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        patient_id INTEGER NOT NULL,
+        staff_id INTEGER NOT NULL,
+        treatment_date TEXT NOT NULL,
+        treatment_type TEXT NOT NULL,
         symptoms TEXT,
         diagnosis TEXT,
         treatment_content TEXT,
         notes TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
         FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE
       )
@@ -73,15 +108,15 @@ async function initializeDatabase() {
     // 予約テーブル
     await connection.execute(`
       CREATE TABLE IF NOT EXISTS appointments (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        patient_id INT NOT NULL,
-        staff_id INT NOT NULL,
-        appointment_date DATETIME NOT NULL,
-        treatment_type VARCHAR(100),
-        status ENUM('scheduled', 'completed', 'cancelled') DEFAULT 'scheduled',
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        patient_id INTEGER NOT NULL,
+        staff_id INTEGER NOT NULL,
+        appointment_date TEXT NOT NULL,
+        treatment_type TEXT,
+        status TEXT DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'completed', 'cancelled')),
         notes TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
         FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE
       )
@@ -92,7 +127,7 @@ async function initializeDatabase() {
     const defaultPassword = await bcrypt.hash('admin123', 10);
     
     await connection.execute(`
-      INSERT IGNORE INTO staff (username, password, name, role, department) 
+      INSERT OR IGNORE INTO staff (username, password, name, role, department) 
       VALUES ('admin', ?, '管理者', 'master', '管理部')
     `, [defaultPassword]);
 

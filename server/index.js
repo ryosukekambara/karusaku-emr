@@ -198,14 +198,14 @@ app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
     // 今月の新規患者数
     const [monthlyNewPatients] = await pool.execute(`
       SELECT COUNT(*) as count FROM patients 
-      WHERE DATE_FORMAT(created_at, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m')
+      WHERE strftime('%Y-%m', created_at) = strftime('%Y-%m', 'now')
     `);
     stats.monthlyNewPatients = monthlyNewPatients[0].count;
 
     // 今日の予約数
     const [todayAppointments] = await pool.execute(`
       SELECT COUNT(*) as count FROM appointments 
-      WHERE DATE(appointment_date) = CURDATE()
+      WHERE date(appointment_date) = date('now')
     `);
     stats.todayAppointments = todayAppointments[0].count;
 
