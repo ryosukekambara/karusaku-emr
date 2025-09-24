@@ -9,6 +9,7 @@ const dbPath = path.join(__dirname, 'medical_records.db');
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('データベース接続エラー:', err.message);
+    process.exit(1);
   } else {
     console.log('SQLiteデータベースに接続しました');
   }
@@ -135,6 +136,7 @@ async function initializeDatabase() {
     console.log('データベーススキーマが初期化されました');
   } catch (error) {
     console.error('データベース初期化エラー:', error);
+    throw error;
   }
 }
 

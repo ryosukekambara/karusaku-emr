@@ -12,9 +12,12 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ミドルウェア
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false
+}));
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3023', 'http://192.168.1.100:3000', 'http://192.168.1.100:3023'],
+  origin: true,
   credentials: true
 }));
 app.use(morgan('combined'));
@@ -51,6 +54,11 @@ const authenticateToken = (req, res, next) => {
     next();
   });
 };
+
+// ヘルスチェックエンドポイント
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
 
 // 認証ルート
 app.post('/api/auth/login', async (req, res) => {
