@@ -25,7 +25,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../client/build')));
 
 // データベース初期化
-initializeDatabase();
+(async () => {
+  try {
+    await initializeDatabase();
+    console.log('Database initialization completed successfully.');
+  } catch (error) {
+    console.error('Failed to initialize database:', error);
+  }
+})();
 
 // JWT認証ミドルウェア
 const authenticateToken = (req, res, next) => {
@@ -46,7 +53,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 // 認証ルート
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
