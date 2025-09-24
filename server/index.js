@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 
 // ミドルウェア
 app.use(helmet({
@@ -229,8 +229,8 @@ app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
   }
 });
 
-// フロントエンドのルート（SPA対応）
-app.get('/*', (req, res) => {
+// フロントエンドのルート（SPA対応）- 最後に配置
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
@@ -240,17 +240,12 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'サーバー内部エラーが発生しました' });
 });
 
-// サーバー起動（Vercel対応）
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`サーバーがポート ${PORT} で起動しました`);
-    console.log(`ローカルアクセス: http://localhost:${PORT}`);
-    console.log(`ネットワークアクセス: http://192.168.1.100:${PORT}`);
-  });
-}
-
-// Vercel用のエクスポート
-module.exports = app;
+// サーバー起動
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`サーバーがポート ${PORT} で起動しました`);
+  console.log(`ローカルアクセス: http://localhost:${PORT}`);
+  console.log(`ネットワークアクセス: http://192.168.1.100:${PORT}`);
+});
 
 // グレースフルシャットダウン
 process.on('SIGINT', async () => {
