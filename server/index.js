@@ -94,124 +94,126 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // 患者管理API
-app.get('/api/patients', authenticateToken, (req, res) => {
-  db.all('SELECT * FROM patients ORDER BY created_at DESC', (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: 'データベースエラー' });
-    }
+app.get('/api/patients', authenticateToken, async (req, res) => {
+  try {
+    const [rows] = await pool.execute('SELECT * FROM patients ORDER BY created_at DESC');
     res.json(rows);
-  });
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'データベースエラー' });
+  }
 });
 
-app.post('/api/patients', authenticateToken, (req, res) => {
+app.post('/api/patients', authenticateToken, async (req, res) => {
   const { name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies } = req.body;
 
-  db.run(
-    `INSERT INTO patients (name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies],
-    function(err) {
-      if (err) {
-        return res.status(500).json({ error: 'データベースエラー' });
-      }
-      res.json({ id: this.lastID, message: '患者が正常に登録されました' });
-    }
-  );
+  try {
+    const [result] = await pool.execute(
+      `INSERT INTO patients (name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies]
+    );
+    res.json({ id: result.insertId, message: '患者が正常に登録されました' });
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'データベースエラー' });
+  }
 });
 
 // 施術記録API
-app.get('/api/medical-records', authenticateToken, (req, res) => {
-  db.all(`
-    SELECT mr.*, p.name as patient_name, s.name as staff_name
-    FROM medical_records mr
-    JOIN patients p ON mr.patient_id = p.id
-    JOIN staff s ON mr.staff_id = s.id
-    ORDER BY mr.treatment_date DESC
-  `, (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: 'データベースエラー' });
-    }
+app.get('/api/medical-records', authenticateToken, async (req, res) => {
+  try {
+    const [rows] = await pool.execute(`
+      SELECT mr.*, p.name as patient_name, s.name as staff_name
+      FROM medical_records mr
+      JOIN patients p ON mr.patient_id = p.id
+      JOIN staff s ON mr.staff_id = s.id
+      ORDER BY mr.treatment_date DESC
+    `);
     res.json(rows);
-  });
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'データベースエラー' });
+  }
 });
 
-app.post('/api/medical-records', authenticateToken, (req, res) => {
+app.post('/api/medical-records', authenticateToken, async (req, res) => {
   const { patient_id, treatment_date, treatment_type, symptoms, diagnosis, treatment_content, notes } = req.body;
 
-  db.run(
-    `INSERT INTO medical_records (patient_id, staff_id, treatment_date, treatment_type, symptoms, diagnosis, treatment_content, notes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    [patient_id, req.user.id, treatment_date, treatment_type, symptoms, diagnosis, treatment_content, notes],
-    function(err) {
-      if (err) {
-        return res.status(500).json({ error: 'データベースエラー' });
-      }
-      res.json({ id: this.lastID, message: '施術記録が正常に登録されました' });
-    }
-  );
+  try {
+    const [result] = await pool.execute(
+      `INSERT INTO medical_records (patient_id, staff_id, treatment_date, treatment_type, symptoms, diagnosis, treatment_content, notes)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [patient_id, req.user.id, treatment_date, treatment_type, symptoms, diagnosis, treatment_content, notes]
+    );
+    res.json({ id: result.insertId, message: '施術記録が正常に登録されました' });
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'データベースエラー' });
+  }
 });
 
 // 予約管理API
-app.get('/api/appointments', authenticateToken, (req, res) => {
-  db.all(`
-    SELECT a.*, p.name as patient_name, s.name as staff_name
-    FROM appointments a
-    JOIN patients p ON a.patient_id = p.id
-    JOIN staff s ON a.staff_id = s.id
-    ORDER BY a.appointment_date ASC
-  `, (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: 'データベースエラー' });
-    }
+app.get('/api/appointments', authenticateToken, async (req, res) => {
+  try {
+    const [rows] = await pool.execute(`
+      SELECT a.*, p.name as patient_name, s.name as staff_name
+      FROM appointments a
+      JOIN patients p ON a.patient_id = p.id
+      JOIN staff s ON a.staff_id = s.id
+      ORDER BY a.appointment_date ASC
+    `);
     res.json(rows);
-  });
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'データベースエラー' });
+  }
 });
 
-app.post('/api/appointments', authenticateToken, (req, res) => {
+app.post('/api/appointments', authenticateToken, async (req, res) => {
   const { patient_id, appointment_date, treatment_type, notes } = req.body;
 
-  db.run(
-    `INSERT INTO appointments (patient_id, staff_id, appointment_date, treatment_type, notes)
-     VALUES (?, ?, ?, ?, ?)`,
-    [patient_id, req.user.id, appointment_date, treatment_type, notes],
-    function(err) {
-      if (err) {
-        return res.status(500).json({ error: 'データベースエラー' });
-      }
-      res.json({ id: this.lastID, message: '予約が正常に登録されました' });
-    }
-  );
+  try {
+    const [result] = await pool.execute(
+      `INSERT INTO appointments (patient_id, staff_id, appointment_date, treatment_type, notes)
+       VALUES (?, ?, ?, ?, ?)`,
+      [patient_id, req.user.id, appointment_date, treatment_type, notes]
+    );
+    res.json({ id: result.insertId, message: '予約が正常に登録されました' });
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'データベースエラー' });
+  }
 });
 
 // ダッシュボード統計API
-app.get('/api/dashboard/stats', authenticateToken, (req, res) => {
-  const stats = {};
+app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
+  try {
+    const stats = {};
 
-  // 総患者数
-  db.get('SELECT COUNT(*) as count FROM patients', (err, row) => {
-    if (err) return res.status(500).json({ error: 'データベースエラー' });
-    stats.totalPatients = row.count;
+    // 総患者数
+    const [totalPatients] = await pool.execute('SELECT COUNT(*) as count FROM patients');
+    stats.totalPatients = totalPatients[0].count;
 
     // 今月の新規患者数
-    db.get(`
+    const [monthlyNewPatients] = await pool.execute(`
       SELECT COUNT(*) as count FROM patients 
-      WHERE strftime('%Y-%m', created_at) = strftime('%Y-%m', 'now')
-    `, (err, row) => {
-      if (err) return res.status(500).json({ error: 'データベースエラー' });
-      stats.monthlyNewPatients = row.count;
+      WHERE DATE_FORMAT(created_at, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m')
+    `);
+    stats.monthlyNewPatients = monthlyNewPatients[0].count;
 
-      // 今日の予約数
-      db.get(`
-        SELECT COUNT(*) as count FROM appointments 
-        WHERE date(appointment_date) = date('now')
-      `, (err, row) => {
-        if (err) return res.status(500).json({ error: 'データベースエラー' });
-        stats.todayAppointments = row.count;
+    // 今日の予約数
+    const [todayAppointments] = await pool.execute(`
+      SELECT COUNT(*) as count FROM appointments 
+      WHERE DATE(appointment_date) = CURDATE()
+    `);
+    stats.todayAppointments = todayAppointments[0].count;
 
-        res.json(stats);
-      });
-    });
-  });
+    res.json(stats);
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'データベースエラー' });
+  }
 });
 
 // フロントエンドのルート（SPA対応）
@@ -233,14 +235,13 @@ app.listen(PORT, '0.0.0.0', () => {
 });
 
 // グレースフルシャットダウン
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
   console.log('\nサーバーをシャットダウンしています...');
-  db.close((err) => {
-    if (err) {
-      console.error('データベースクローズエラー:', err.message);
-    } else {
-      console.log('データベース接続を閉じました');
-    }
-    process.exit(0);
-  });
+  try {
+    await pool.end();
+    console.log('データベース接続を閉じました');
+  } catch (err) {
+    console.error('データベースクローズエラー:', err.message);
+  }
+  process.exit(0);
 });
