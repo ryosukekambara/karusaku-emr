@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const path = require('path');
 const { pool, initializeDatabase } = require('./database');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -221,25 +220,20 @@ app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
   }
 });
 
-// 静的ファイルの提供（フロントエンド）
-app.use('/static', express.static(path.join(__dirname, '../client/build/static')));
-app.use('/manifest.json', express.static(path.join(__dirname, '../client/build/manifest.json')));
-app.use('/favicon.ico', express.static(path.join(__dirname, '../client/build/favicon.ico')));
-
-// SPAフォールバック（すべての未定義ルートでindex.htmlを返す）
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-});
-
 // エラーハンドリング
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'サーバー内部エラーが発生しました' });
 });
 
+// 404ハンドリング
+app.use((req, res) => {
+  res.status(404).json({ error: 'APIエンドポイントが見つかりません' });
+});
+
 // サーバー起動
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`サーバーがポート ${PORT} で起動しました`);
+  console.log(`APIサーバーがポート ${PORT} で起動しました`);
   console.log(`ローカルアクセス: http://localhost:${PORT}`);
   console.log(`ネットワークアクセス: http://192.168.1.100:${PORT}`);
 });
