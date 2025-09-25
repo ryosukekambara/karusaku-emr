@@ -229,8 +229,12 @@ app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
   }
 });
 
-// SPAフォールバック（すべてのルートでindex.htmlを返す）
-app.get('*', (req, res) => {
+// SPAフォールバック（APIルート以外でindex.htmlを返す）
+app.get('*', (req, res, next) => {
+  // APIルートの場合は次のミドルウェアに進む
+  if (req.path.startsWith('/api/')) {
+    return next();
+  }
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
