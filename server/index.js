@@ -27,9 +27,9 @@ app.use(express.urlencoded({ extended: true }));
 // 静的ファイルの提供（フロントエンド）
 app.use(express.static(path.join(__dirname, '../client/build')));
 
-// Vercel用のルート
+// ルートパスはフロントエンドを配信
 app.get('/', (req, res) => {
-  res.json({ message: 'カルサクEMR API Server', status: 'running' });
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
 // データベース初期化
