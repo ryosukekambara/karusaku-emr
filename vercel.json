@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://karusaku-emr.onrender.com/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/build/$1"
+    }
+  ],
+  "env": {
+    "REACT_APP_API_BASE_URL": "https://karusaku-emr.onrender.com"
+  },
+  "functions": {
+    "client/build/static/js/*.js": {
+      "maxDuration": 10
+    }
+  }
+}
