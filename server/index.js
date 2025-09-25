@@ -229,13 +229,11 @@ app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
   }
 });
 
-// SPAフォールバック（APIルート以外のすべてのルート）
-app.use((req, res) => {
-  // APIルートは除外
-  if (req.path.startsWith('/api/')) {
-    return res.status(404).json({ error: 'API endpoint not found' });
-  }
-  // その他のルートはSPAのindex.htmlを返す
+// 静的ファイル配信
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+// SPAフォールバック（すべてのルートでindex.htmlを返す）
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
