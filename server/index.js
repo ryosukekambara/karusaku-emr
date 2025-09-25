@@ -230,12 +230,7 @@ app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
 });
 
 // フロントエンドのルート（SPA対応）- 最後に配置
-app.use((req, res, next) => {
-  // APIルートは除外して404を返す
-  if (req.path.startsWith('/api/')) {
-    return res.status(404).json({ error: 'API endpoint not found' });
-  }
-  // その他のルートはSPAのindex.htmlを返す
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
