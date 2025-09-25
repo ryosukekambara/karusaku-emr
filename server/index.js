@@ -229,9 +229,6 @@ app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
   }
 });
 
-// 静的ファイル配信
-app.use(express.static(path.join(__dirname, '../client/build')));
-
 // SPAフォールバック（すべてのルートでindex.htmlを返す）
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
