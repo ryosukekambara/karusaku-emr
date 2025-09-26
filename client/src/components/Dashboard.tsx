@@ -252,8 +252,14 @@ const Dashboard: React.FC = () => {
             <h3>本日の顧客登録数</h3>
             <div className="stat-number">{todayStats?.total_patients || 0}名</div>
             <div className="stat-breakdown">
-              <span className="new-patients">新規: {todayStats?.new_patients || 0}名</span>
-              <span className="existing-patients">既存: {todayStats?.existing_patients || 0}名</span>
+              <div className="breakdown-item">
+                <span className="label">新規</span>
+                <span className="value">{todayStats?.new_patients || 0}名</span>
+              </div>
+              <div className="breakdown-item">
+                <span className="label">既存</span>
+                <span className="value">{todayStats?.existing_patients || 0}名</span>
+              </div>
             </div>
           </div>
         </div>
@@ -263,8 +269,14 @@ const Dashboard: React.FC = () => {
             <h3>今月の顧客登録数</h3>
             <div className="stat-number">{monthlyStats?.total_patients || 0}名</div>
             <div className="stat-breakdown">
-              <span className="new-patients">新規: {monthlyStats?.new_patients || 0}名</span>
-              <span className="existing-patients">既存: {monthlyStats?.existing_patients || 0}名</span>
+              <div className="breakdown-item">
+                <span className="label">新規</span>
+                <span className="value">{monthlyStats?.new_patients || 0}名</span>
+              </div>
+              <div className="breakdown-item">
+                <span className="label">既存</span>
+                <span className="value">{monthlyStats?.existing_patients || 0}名</span>
+              </div>
             </div>
           </div>
         </div>
@@ -274,7 +286,7 @@ const Dashboard: React.FC = () => {
             <h3>総顧客数</h3>
             <div className="stat-number">{patients.length}名</div>
             <div className="stat-trend">
-              <span className="trend-up">↗ +12%</span>
+              <span className="trend-up">前月比 +18名</span>
             </div>
           </div>
         </div>

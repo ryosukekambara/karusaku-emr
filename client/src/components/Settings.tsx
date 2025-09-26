@@ -347,57 +347,60 @@ const Settings: React.FC = () => {
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="settings-form">
+      <form onSubmit={handleSubmit} className="settings-content">
         {activeTab === 'general' && (
           <div className="settings-section">
-            <h3>クリニック情報</h3>
-            <div className="form-grid">
-              <div className="form-group">
-                <label>クリニック名 *</label>
-                <input
-                  type="text"
-                  name="clinic_name"
-                  value={settings.clinic_name}
-                  onChange={handleInputChange}
-                  required
-                  className="form-control"
-                />
-              </div>
-              <div className="form-group">
-                <label>住所</label>
-                <textarea
-                  name="clinic_address"
-                  value={settings.clinic_address}
-                  onChange={handleInputChange}
-                  className="form-control"
-                  rows={3}
-                />
-              </div>
-              <div className="form-group">
-                <label>電話番号</label>
-                <input
-                  type="tel"
-                  name="clinic_phone"
-                  value={settings.clinic_phone}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
-              </div>
-              <div className="form-group">
-                <label>メールアドレス</label>
-                <input
-                  type="email"
-                  name="clinic_email"
-                  value={settings.clinic_email}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
+            <div className="section-card">
+              <h3>クリニック情報</h3>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>クリニック名 *</label>
+                  <input
+                    type="text"
+                    name="clinic_name"
+                    value={settings.clinic_name}
+                    onChange={handleInputChange}
+                    required
+                    className="form-control"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>住所</label>
+                  <textarea
+                    name="clinic_address"
+                    value={settings.clinic_address}
+                    onChange={handleInputChange}
+                    className="form-control"
+                    rows={3}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>電話番号</label>
+                  <input
+                    type="tel"
+                    name="clinic_phone"
+                    value={settings.clinic_phone}
+                    onChange={handleInputChange}
+                    className="form-control"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>メールアドレス</label>
+                  <input
+                    type="email"
+                    name="clinic_email"
+                    value={settings.clinic_email}
+                    onChange={handleInputChange}
+                    className="form-control"
+                  />
+                </div>
               </div>
             </div>
 
-            <h3>表示設定</h3>
-            <div className="form-grid">
-              <div className="form-group">
+            <div className="section-card">
+              <h3>表示設定</h3>
+              <div className="form-grid">
+                <div className="form-group">
                 <label>テーマ</label>
                 <select
                   name="theme"
@@ -453,9 +456,10 @@ const Settings: React.FC = () => {
 
         {activeTab === 'security' && (
           <div className="settings-section">
-            <h3>パスワードポリシー</h3>
-            <div className="form-grid">
-              <div className="form-group">
+            <div className="section-card">
+              <h3>パスワードポリシー</h3>
+              <div className="form-grid">
+                <div className="form-group">
                 <label>最小文字数</label>
                 <input
                   type="number"
@@ -503,9 +507,9 @@ const Settings: React.FC = () => {
                   className="form-control"
                 />
               </div>
-            </div>
+              </div>
 
-            <div className="checkbox-group">
+              <div className="checkbox-group">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -542,15 +546,17 @@ const Settings: React.FC = () => {
                 />
                 特殊文字を含む
               </label>
+              </div>
             </div>
           </div>
         )}
 
         {activeTab === 'notifications' && (
           <div className="settings-section">
-            <h3>通知設定</h3>
-            <div className="form-grid">
-              <div className="form-group">
+            <div className="section-card">
+              <h3>通知設定</h3>
+              <div className="form-grid">
+                <div className="form-group">
                 <label>予約リマインダー</label>
                 <div className="checkbox-wrapper">
                   <input
@@ -604,9 +610,10 @@ const Settings: React.FC = () => {
 
         {activeTab === 'data' && (
           <div className="settings-section">
-            <h3>データ管理</h3>
-            <div className="form-grid">
-              <div className="form-group">
+            <div className="section-card">
+              <h3>データ管理</h3>
+              <div className="form-grid">
+                <div className="form-group">
                 <label>自動バックアップ</label>
                 <div className="checkbox-wrapper">
                   <input
@@ -707,8 +714,9 @@ const Settings: React.FC = () => {
 
         {activeTab === 'logs' && (
           <div className="settings-section">
-            <h3>セキュリティログ</h3>
-            <div className="security-logs">
+            <div className="section-card">
+              <h3>セキュリティログ</h3>
+              <div className="security-logs">
               {securityLogs.length === 0 ? (
                 <p className="no-logs">セキュリティログがありません</p>
               ) : (
