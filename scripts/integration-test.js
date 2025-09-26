@@ -89,7 +89,8 @@ class IntegrationTester {
     
     try {
       const startTime = Date.now();
-      const response = await fetch(this.baseUrl);
+      const frontendUrl = 'https://karusaku-emr-frontend.netlify.app';
+      const response = await fetch(frontendUrl);
       const endTime = Date.now();
       const responseTime = endTime - startTime;
       
@@ -97,6 +98,7 @@ class IntegrationTester {
         const contentType = response.headers.get('content-type');
         this.log(`✅ フロントエンド: 成功 (${response.status}) - ${responseTime}ms`);
         this.log(`📄 Content-Type: ${contentType}`);
+        this.log(`🌐 URL: ${frontendUrl}`);
         
         this.testResults.push({
           name: 'フロントエンド',
