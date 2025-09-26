@@ -317,7 +317,7 @@ function App() {
           
           <div className="header-user-info">
             <span className="user-name">{user?.name}</span>
-            <button onClick={handleLogout} className="header-logout-btn" title="ログアウト">
+            <button onClick={handleLogout} className="header-logout-btn">
               <LogOut size={20} />
             </button>
           </div>

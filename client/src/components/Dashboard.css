@@ -151,6 +151,10 @@
   font-weight: 500;
   margin-top: 8px;
   display: block;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .breakdown-inline .new-count {
