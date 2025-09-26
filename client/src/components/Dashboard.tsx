@@ -249,7 +249,7 @@ const Dashboard: React.FC = () => {
         <div className="stat-card">
           <div className="stat-icon"><Calendar size={24} /></div>
           <div className="stat-content">
-            <h3>本日の顧客登録数</h3>
+            <h3>本日の顧客数</h3>
             <div className="stat-number">{todayStats?.total_patients || 0}名</div>
             <div className="stat-breakdown">
               <span className="breakdown-inline">
@@ -261,7 +261,7 @@ const Dashboard: React.FC = () => {
         <div className="stat-card">
           <div className="stat-icon"><BarChart3 size={24} /></div>
           <div className="stat-content">
-            <h3>今月の顧客登録数</h3>
+            <h3>今月の顧客数</h3>
             <div className="stat-number">{monthlyStats?.total_patients || 0}名</div>
             <div className="stat-breakdown">
               <span className="breakdown-inline">
