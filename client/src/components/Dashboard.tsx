@@ -253,7 +253,7 @@ const Dashboard: React.FC = () => {
             <div className="stat-number">{todayStats?.total_patients || 0}名</div>
             <div className="stat-breakdown">
               <span className="breakdown-inline">
-                新規 {todayStats?.new_patients || 0}名 / 既存 {todayStats?.existing_patients || 0}名
+                新規 <span className="new-count">{todayStats?.new_patients || 0}名</span> / 既存 <span className="existing-count">{todayStats?.existing_patients || 0}名</span>
               </span>
             </div>
           </div>
@@ -265,7 +265,7 @@ const Dashboard: React.FC = () => {
             <div className="stat-number">{monthlyStats?.total_patients || 0}名</div>
             <div className="stat-breakdown">
               <span className="breakdown-inline">
-                新規 {monthlyStats?.new_patients || 0}名 / 既存 {monthlyStats?.existing_patients || 0}名
+                新規 <span className="new-count">{monthlyStats?.new_patients || 0}名</span> / 既存 <span className="existing-count">{monthlyStats?.existing_patients || 0}名</span>
               </span>
             </div>
           </div>

@@ -170,6 +170,8 @@ function App() {
     localStorage.removeItem('user');
     setUser(null);
     setSecurityAlert(null);
+    // ログアウト後にページをリロードしてログイン画面に戻る
+    window.location.reload();
   };
 
   // セキュリティアラートをクリア

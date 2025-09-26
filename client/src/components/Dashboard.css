@@ -153,6 +153,16 @@
   display: block;
 }
 
+.breakdown-inline .new-count {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.breakdown-inline .existing-count {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
 /* チャートセクション */
 .chart-section {
   background: white;
