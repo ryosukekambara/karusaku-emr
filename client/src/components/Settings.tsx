@@ -104,15 +104,10 @@ const Settings: React.FC = () => {
 
   const fetchSettings = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/settings', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
+      // ローカルストレージから設定を読み込み
+      const savedSettings = localStorage.getItem('systemSettings');
+      if (savedSettings) {
+        const data = JSON.parse(savedSettings);
         setSettings(prev => ({ ...prev, ...data }));
       }
     } catch (error) {
@@ -210,22 +205,10 @@ const Settings: React.FC = () => {
     setSuccess('');
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/settings', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(settings),
-      });
-
-      if (response.ok) {
-        setSuccess('設定が正常に保存されました');
-        setTimeout(() => setSuccess(''), 3000);
-      } else {
-        setError('設定の保存に失敗しました');
-      }
+      // ローカルストレージに設定を保存
+      localStorage.setItem('systemSettings', JSON.stringify(settings));
+      setSuccess('設定が正常に保存されました');
+      setTimeout(() => setSuccess(''), 3000);
     } catch (error) {
       console.error('設定の保存に失敗しました:', error);
       setError('設定の保存に失敗しました');
@@ -236,19 +219,22 @@ const Settings: React.FC = () => {
 
   const handleBackup = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/settings/backup', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        setSuccess('バックアップが開始されました');
+      // ローカルストレージから設定を取得してダウンロード
+      const settingsData = localStorage.getItem('systemSettings');
+      if (settingsData) {
+        const blob = new Blob([settingsData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `karusaku-settings-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        setSuccess('バックアップが完了しました');
         setTimeout(() => setSuccess(''), 3000);
       } else {
-        setError('バックアップの開始に失敗しました');
+        setError('バックアップする設定がありません');
       }
     } catch (error) {
       console.error('バックアップの開始に失敗しました:', error);
@@ -258,25 +244,20 @@ const Settings: React.FC = () => {
 
   const handleRestore = async (file: File) => {
     try {
-      const token = localStorage.getItem('token');
-      const formData = new FormData();
-      formData.append('backup', file);
-
-      const response = await fetch('/api/settings/restore', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (response.ok) {
-        setSuccess('復元が完了しました');
-        setTimeout(() => setSuccess(''), 3000);
-        fetchSettings();
-      } else {
-        setError('復元に失敗しました');
-      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const settingsData = JSON.parse(e.target?.result as string);
+          localStorage.setItem('systemSettings', JSON.stringify(settingsData));
+          setSettings(prev => ({ ...prev, ...settingsData }));
+          setSuccess('復元が完了しました');
+          setTimeout(() => setSuccess(''), 3000);
+        } catch (error) {
+          console.error('復元に失敗しました:', error);
+          setError('復元に失敗しました');
+        }
+      };
+      reader.readAsText(file);
     } catch (error) {
       console.error('復元に失敗しました:', error);
       setError('復元に失敗しました');
@@ -285,25 +266,22 @@ const Settings: React.FC = () => {
 
   const handleExportSettings = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/settings/export', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const blob = await response.blob();
+      // ローカルストレージから設定を取得してダウンロード
+      const settingsData = localStorage.getItem('systemSettings');
+      if (settingsData) {
+        const blob = new Blob([settingsData], { type: 'application/json' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `settings_${new Date().toISOString().split('T')[0]}.json`;
+        a.download = `karusaku-settings-export-${new Date().toISOString().split('T')[0]}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
+        setSuccess('設定のエクスポートが完了しました');
+        setTimeout(() => setSuccess(''), 3000);
       } else {
-        setError('設定のエクスポートに失敗しました');
+        setError('エクスポートする設定がありません');
       }
     } catch (error) {
       console.error('設定のエクスポートに失敗しました:', error);
