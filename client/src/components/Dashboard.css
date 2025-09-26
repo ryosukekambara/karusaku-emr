@@ -145,6 +145,14 @@
   color: var(--primary-color);
 }
 
+.breakdown-inline {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-top: 8px;
+  display: block;
+}
+
 /* チャートセクション */
 .chart-section {
   background: white;

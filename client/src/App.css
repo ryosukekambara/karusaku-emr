@@ -69,10 +69,10 @@ body {
 
 /* ハンバーガーメニュー - 常に表示 */
 .hamburger-menu {
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  z-index: 3000;
+  position: relative;
+  top: auto;
+  left: auto;
+  z-index: auto;
   background: var(--gradient-primary);
   color: var(--white);
   border: none;
@@ -96,6 +96,52 @@ body {
 /* ハンバーガーメニューは常に表示 */
 .hamburger-menu {
   display: flex !important;
+}
+
+/* アプリヘッダー */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  z-index: 2000;
+  box-shadow: 0 2px 4px var(--shadow-light);
+}
+
+.header-user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.header-logout-btn {
+  background: var(--danger-color);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.header-logout-btn:hover {
+  background: #c0392b;
 }
 
 /* ロゴコンテナ - 美しい配置 */

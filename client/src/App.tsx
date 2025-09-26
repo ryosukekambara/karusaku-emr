@@ -20,7 +20,8 @@ import {
   TrendingUp, 
   Settings,
   Menu,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
 
 // コンポーネントのインポート
@@ -290,8 +291,9 @@ function App() {
     // メインコンテンツのスタイルをJavaScriptで直接制御（固定位置）
     const mainContentStyle = {
       marginLeft: '0',
+      marginTop: '60px', // ヘッダーの高さ分だけ下げる
       transition: 'none',
-      minHeight: '100vh',
+      minHeight: 'calc(100vh - 60px)',
       padding: '20px',
       backgroundColor: '#f5f5f5',
       width: '100%',
@@ -302,13 +304,22 @@ function App() {
 
     return (
       <div className="app-layout">
-        {/* ハンバーガーメニューボタン */}
-        <button 
-          className="hamburger-menu"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-        >
-          <Menu size={24} />
-        </button>
+        {/* ヘッダー */}
+        <div className="app-header">
+          <button 
+            className="hamburger-menu"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            <Menu size={24} />
+          </button>
+          
+          <div className="header-user-info">
+            <span className="user-name">{user?.name}</span>
+            <button onClick={handleLogout} className="header-logout-btn" title="ログアウト">
+              <LogOut size={20} />
+            </button>
+          </div>
+        </div>
         
         {user && (
           <Sidebar user={user} />
