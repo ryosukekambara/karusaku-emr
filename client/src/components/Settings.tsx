@@ -491,6 +491,7 @@ const Settings: React.FC = () => {
                 </select>
               </div>
             </div>
+            </div>
           </div>
         )}
 
@@ -645,6 +646,7 @@ const Settings: React.FC = () => {
                 </div>
               </div>
             </div>
+            </div>
           </div>
         )}
 
@@ -749,6 +751,7 @@ const Settings: React.FC = () => {
                 </div>
               </div>
             </div>
+            </div>
           </div>
         )}
 
@@ -773,6 +776,7 @@ const Settings: React.FC = () => {
                   ))}
                 </div>
               )}
+              </div>
             </div>
           </div>
         )}

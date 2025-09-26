@@ -242,7 +242,7 @@ function App() {
                   case 'UserPlus': return <UserPlus size={20} />;
                   case 'FileText': return <FileText size={20} />;
                   case 'Calendar': return <Calendar size={20} />;
-                  case 'Utensils': return <Utensils size={20} />;
+                  case 'Stethoscope': return <Stethoscope size={20} />;
                   case 'UserCheck': return <UserCheck size={20} />;
                   case 'Receipt': return <Receipt size={20} />;
                   case 'UserCog': return <UserCog size={20} />;
