@@ -48,8 +48,9 @@ class SystemMonitor {
   
   async checkFrontend() {
     try {
+      const frontendUrl = 'https://karusaku-emr-frontend.netlify.app';
       const startTime = Date.now();
-      const response = await fetch(this.url);
+      const response = await fetch(frontendUrl);
       const endTime = Date.now();
       const responseTime = endTime - startTime;
       
