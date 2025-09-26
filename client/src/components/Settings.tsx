@@ -3,6 +3,7 @@ import './Settings.css';
 
 interface SystemSettings {
   clinic_name: string;
+  clinic_postal_code: string;
   clinic_address: string;
   clinic_phone: string;
   clinic_email: string;
@@ -56,6 +57,7 @@ interface SecurityLog {
 const Settings: React.FC = () => {
   const [settings, setSettings] = useState<SystemSettings>({
     clinic_name: '',
+    clinic_postal_code: '',
     clinic_address: '',
     clinic_phone: '',
     clinic_email: '',
@@ -175,6 +177,29 @@ const Settings: React.FC = () => {
         ...prev,
         [name]: type === 'checkbox' ? checked : value
       }));
+    }
+
+    // 郵便番号から住所を自動取得
+    if (name === 'clinic_postal_code' && value.length === 7) {
+      fetchAddressFromPostalCode(value);
+    }
+  };
+
+  const fetchAddressFromPostalCode = async (postalCode: string) => {
+    try {
+      const response = await fetch(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${postalCode}`);
+      const data = await response.json();
+      
+      if (data.status === 200 && data.results && data.results.length > 0) {
+        const result = data.results[0];
+        const fullAddress = `${result.address1}${result.address2}${result.address3}`;
+        setSettings(prev => ({
+          ...prev,
+          clinic_address: fullAddress
+        }));
+      }
+    } catch (error) {
+      console.error('住所取得エラー:', error);
     }
   };
 
@@ -365,13 +390,28 @@ const Settings: React.FC = () => {
                   />
                 </div>
                 <div className="form-group">
+                  <label>郵便番号</label>
+                  <input
+                    type="text"
+                    name="clinic_postal_code"
+                    value={settings.clinic_postal_code || ''}
+                    onChange={handleInputChange}
+                    className="form-control"
+                    placeholder="例: 1234567"
+                    maxLength={7}
+                    pattern="[0-9]{7}"
+                  />
+                  <small className="form-help">7桁の数字を入力すると住所が自動で入力されます</small>
+                </div>
+                <div className="form-group">
                   <label>住所</label>
-                  <textarea
+                  <input
+                    type="text"
                     name="clinic_address"
                     value={settings.clinic_address}
                     onChange={handleInputChange}
                     className="form-control"
-                    rows={3}
+                    placeholder="住所を入力してください"
                   />
                 </div>
                 <div className="form-group">

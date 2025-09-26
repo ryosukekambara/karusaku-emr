@@ -140,6 +140,14 @@
   box-shadow: 0 0 0 2px rgba(32, 178, 170, 0.1);
 }
 
+.form-help {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
 .checkbox-group {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
