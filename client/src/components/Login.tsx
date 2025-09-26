@@ -85,10 +85,10 @@ const Login: React.FC<LoginProps> = ({ onLogin, securityAlert }) => {
           <h3>ログイン情報</h3>
           <div className="user-list">
             <div className="user-item master">
-              <strong>マスター権限:</strong> staff0 / staff0
+              <strong>マスター権限:</strong> admin / admin123
             </div>
             <div className="user-item">
-              <strong>スタッフ権限:</strong> staff1 / staff1
+              <strong>スタッフ権限:</strong> doctor1 / doctor123
             </div>
           </div>
         </div>
