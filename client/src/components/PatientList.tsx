@@ -81,44 +81,14 @@ const PatientList: React.FC = () => {
     }
   }, []);
 
-  const togglePatientType = async (patientId: number, currentType: boolean) => {
-    try {
-      const token = localStorage.getItem('token') || 'demo-token';
-      const newType = !currentType; // 現在の状態を反転
-      
-      // デモモードの場合は直接ローカル状態を更新
-      if (token === 'demo-token') {
-        setPatients(prev => prev.map(patient => 
-          patient.id === patientId 
-            ? { ...patient, is_new_patient: newType }
-            : patient
-        ));
-        return;
-      }
-      
-      const response = await fetch(`https://karusaku-emr-aeza.onrender.com/api/patients/${patientId}/mark-existing`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ is_new_patient: newType }),
-      });
-
-      if (response.ok) {
-        // 顧客リストを更新
-        setPatients(prev => prev.map(patient => 
-          patient.id === patientId 
-            ? { ...patient, is_new_patient: newType }
-            : patient
-        ));
-      } else {
-        alert('顧客の更新に失敗しました');
-      }
-    } catch (error) {
-      console.error('顧客の更新に失敗しました:', error);
-      alert('顧客の更新に失敗しました');
-    }
+  const togglePatientType = (patientId: number, currentType: boolean) => {
+    // 直接ローカル状態を更新（API呼び出しなし）
+    const newType = !currentType;
+    setPatients(prev => prev.map(patient => 
+      patient.id === patientId 
+        ? { ...patient, is_new_patient: newType }
+        : patient
+    ));
   };
 
   const filteredPatients = patients
@@ -333,7 +303,7 @@ const PatientList: React.FC = () => {
                 <th>生年月日</th>
                 <th>フォロー担当</th>
                 <th>最終来店日</th>
-                <th>操作</th>
+                <th style={{ textAlign: 'left' }}>操作</th>
               </tr>
             </thead>
             <tbody>
@@ -358,8 +328,8 @@ const PatientList: React.FC = () => {
                   <td>{patient.date_of_birth}</td>
                   <td>{patient.gender || '未設定'}</td>
                   <td>{new Date(patient.created_at).toLocaleDateString('ja-JP')}</td>
-                  <td>
-                    <div className="action-buttons">
+                  <td style={{ textAlign: 'left' }}>
+                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start' }}>
                       <Link to={`/patients/${patient.id}`} className="btn btn-sm btn-secondary">
                         詳細
                       </Link>
