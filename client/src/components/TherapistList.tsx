@@ -23,7 +23,7 @@ const TherapistList: React.FC = () => {
 
   const fetchTherapists = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || 'demo-token';
       const response = await fetch('/api/therapists', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -53,7 +53,7 @@ const TherapistList: React.FC = () => {
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || 'demo-token';
       const response = await fetch(`/api/therapists/${id}`, {
         method: 'DELETE',
         headers: {

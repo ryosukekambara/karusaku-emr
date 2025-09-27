@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, BarChart3, Users, TrendingUp, Download, Home, Menu, UserCheck, Search, FileText, Stethoscope } from 'lucide-react';
+import { Calendar, BarChart3, Users, Download, Home, Menu, Search, FileText, Stethoscope } from 'lucide-react';
 import './Dashboard.css';
 
 interface MonthlyStats {
@@ -26,31 +26,30 @@ interface TherapistStats {
   repeat_rate: number;
 }
 
-interface DashboardData {
-  totalPatients: number;
-  newPatientsThisMonth: number;
-  totalAppointments: number;
-  totalRevenue: number;
-  monthlyStats: {
-    patients: number[];
-    revenue: number[];
-    appointments: number[];
-  };
-  recentPatients: Array<{
-    id: number;
-    name: string;
-    lastVisit: string;
-    nextAppointment: string;
-  }>;
-}
+// interface DashboardData {
+//   totalPatients: number;
+//   newPatientsThisMonth: number;
+//   totalAppointments: number;
+//   totalRevenue: number;
+//   monthlyStats: {
+//     patients: number[];
+//     revenue: number[];
+//     appointments: number[];
+//   };
+//   recentPatients: Array<{
+//     id: number;
+//     name: string;
+//     lastVisit: string;
+//     nextAppointment: string;
+//   }>;
+// }
 
 const Dashboard: React.FC = () => {
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
-  const [patients, setPatients] = useState<any[]>([]);
-  const [monthlyStats, setMonthlyStats] = useState<MonthlyStats | null>(null);
-  const [todayStats, setTodayStats] = useState<TodayStats | null>(null);
-  const [monthlyTrend, setMonthlyTrend] = useState<MonthlyStats[]>([]);
-  const [therapistStats, setTherapistStats] = useState<TherapistStats[]>([]);
+  const [patients] = useState<any[]>([]);
+  const [monthlyStats] = useState<MonthlyStats | null>(null);
+  const [todayStats] = useState<TodayStats | null>(null);
+  const [monthlyTrend] = useState<MonthlyStats[]>([]);
+  const [therapistStats] = useState<TherapistStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const now = new Date();
@@ -59,48 +58,48 @@ const Dashboard: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showCharts, setShowCharts] = useState(true);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       
       // オフラインモックデータ（APIリクエストなし）
-      const mockData: DashboardData = {
-        totalPatients: 150,
-        newPatientsThisMonth: 25,
-        totalAppointments: 320,
-        totalRevenue: 2500000,
-        monthlyStats: {
-          patients: [120, 135, 142, 150],
-          revenue: [1800000, 2000000, 2200000, 2500000],
-          appointments: [280, 300, 310, 320]
-        },
-        recentPatients: [
-          {
-            id: 1,
-            name: "田中太郎",
-            lastVisit: "2024-08-29",
-            nextAppointment: "2024-09-05"
-          },
-          {
-            id: 2,
-            name: "佐藤花子",
-            lastVisit: "2024-08-28",
-            nextAppointment: "2024-09-02"
-          }
-        ]
-      };
+      // const mockData: DashboardData = {
+      //   totalPatients: 150,
+      //   newPatientsThisMonth: 25,
+      //   totalAppointments: 320,
+      //   totalRevenue: 2500000,
+      //   monthlyStats: {
+      //     patients: [120, 135, 142, 150],
+      //     revenue: [1800000, 2000000, 2200000, 2500000],
+      //     appointments: [280, 300, 310, 320]
+      //   },
+      //   recentPatients: [
+      //     {
+      //       id: 1,
+      //       name: "田中太郎",
+      //       lastVisit: "2024-08-29",
+      //       nextAppointment: "2024-09-05"
+      //     },
+      //     {
+      //       id: 2,
+      //       name: "佐藤花子",
+      //       lastVisit: "2024-08-28",
+      //       nextAppointment: "2024-09-02"
+      //     }
+      //   ]
+      // };
 
-      setDashboardData(mockData);
+      // setDashboardData(mockData);
     } catch (error) {
       console.error('ダッシュボードデータの取得エラー:', error);
     } finally {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const downloadCSV = useCallback(() => {
     const headers = ['ID', '氏名', '生年月日', '性別', '電話番号', '住所', '緊急連絡先', '登録日'];
@@ -156,7 +155,7 @@ const Dashboard: React.FC = () => {
   }, [patients, selectedMonth]);
 
   const getMonthLabel = useCallback((monthStr: string) => {
-    const [year, month] = monthStr.split('-');
+    const [, month] = monthStr.split('-');
     return `${month}月`;
   }, []);
 
@@ -165,14 +164,14 @@ const Dashboard: React.FC = () => {
   }, []);
 
   // メモ化された計算値
-  const maxValue = useMemo(() => getMaxValue(monthlyTrend), [monthlyTrend, getMaxValue]);
-  const monthlyPatients = useMemo(() => {
-    const [selectedYear, selectedMonthNum] = selectedMonth.split('-');
-    return patients.filter(patient => {
-      const patientDate = new Date(patient.created_at);
-      return patientDate.getMonth() + 1 === parseInt(selectedMonthNum) && patientDate.getFullYear() === parseInt(selectedYear);
-    });
-  }, [patients, selectedMonth]);
+  // const maxValue = useMemo(() => getMaxValue(monthlyTrend), [monthlyTrend, getMaxValue]);
+  // const monthlyPatients = useMemo(() => {
+  //   const [selectedYear, selectedMonthNum] = selectedMonth.split('-');
+  //   return patients.filter(patient => {
+  //     const patientDate = new Date(patient.created_at);
+  //     return patientDate.getMonth() + 1 === parseInt(selectedMonthNum) && patientDate.getFullYear() === parseInt(selectedYear);
+  //   });
+  // }, [patients, selectedMonth]);
 
   if (loading) {
     return <div className="loading">データを読み込み中...</div>;

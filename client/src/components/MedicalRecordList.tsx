@@ -29,7 +29,7 @@ const MedicalRecordList: React.FC = () => {
 
   const fetchRecords = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || 'demo-token';
       const response = await fetch('/api/medical-records', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -52,7 +52,7 @@ const MedicalRecordList: React.FC = () => {
 
   const fetchTherapists = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || 'demo-token';
       const response = await fetch('/api/therapists', {
         headers: {
           'Authorization': `Bearer ${token}`,

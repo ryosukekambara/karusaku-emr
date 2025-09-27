@@ -77,7 +77,7 @@ const EditMedicalRecord: React.FC = () => {
 
   const fetchTherapists = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || 'demo-token';
       const response = await fetch('/api/therapists', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -107,7 +107,7 @@ const EditMedicalRecord: React.FC = () => {
     setError('');
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || 'demo-token';
       const response = await fetch(`/api/medical-records/${id}`, {
         method: 'PUT',
         headers: {

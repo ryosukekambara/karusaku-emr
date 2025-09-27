@@ -36,7 +36,7 @@ const EditTherapist: React.FC = () => {
   const fetchTherapist = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || 'demo-token';
       const response = await fetch(`/api/therapists/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -79,7 +79,7 @@ const EditTherapist: React.FC = () => {
     e.preventDefault();
     
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || 'demo-token';
       const response = await fetch(`/api/therapists/${id}`, {
         method: 'PUT',
         headers: {

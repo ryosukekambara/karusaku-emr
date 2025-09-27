@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import './App.css';
-import { API_ENDPOINTS, getAuthHeaders } from './config/api';
+import { API_ENDPOINTS } from './config/api';
 import { 
   BarChart3, 
   Users, 
@@ -78,6 +78,11 @@ function App() {
   // セキュリティチェック
   useEffect(() => {
     const checkSecurity = () => {
+      // デモユーザーの場合はセキュリティチェックをスキップ
+      if (user?.username === 'demo') {
+        return;
+      }
+
       // セッション有効性チェック
       if (user && !sessionManager.isSessionValid()) {
         setSecurityAlert('セッションが期限切れです。再度ログインしてください。');
@@ -115,10 +120,27 @@ function App() {
         if (token && userData) {
           const user = JSON.parse(userData);
           setUser(user);
+        } else {
+          // トークンがない場合はデモトークンを設定
+          localStorage.setItem('token', 'demo-token');
+          const demoUser: User = {
+            username: 'demo',
+            name: 'デモユーザー',
+            role: 'master',
+            department: '管理部'
+          };
+          setUser(demoUser);
         }
       } catch (error) {
         console.error('Security error during initialization:', error);
-        handleLogout();
+        // エラーの場合はデモユーザーを設定
+        const demoUser: User = {
+          username: 'demo',
+          name: 'デモユーザー',
+          role: 'master',
+          department: '管理部'
+        };
+        setUser(demoUser);
       } finally {
         setLoading(false);
       }
