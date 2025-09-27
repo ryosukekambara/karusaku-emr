@@ -192,8 +192,9 @@ function App() {
     localStorage.removeItem('user');
     setUser(null);
     setSecurityAlert(null);
-    // ログアウト後にページをリロードしてログイン画面に戻る
-    window.location.reload();
+    setSidebarOpen(false);
+    // ログイン画面にリダイレクト（ページリロードなし）
+    window.location.href = '/login';
   };
 
   // セキュリティアラートをクリア
