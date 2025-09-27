@@ -112,6 +112,8 @@ function App() {
   // 初期化時のセキュリティチェック
   useEffect(() => {
     const initializeApp = () => {
+      console.log('🚀 App initialization started');
+      
       // 常にデモユーザーを設定（シンプル化）
       const demoUser: User = {
         username: 'demo',
@@ -120,10 +122,14 @@ function App() {
         department: '管理部'
       };
       
+      console.log('👤 Setting demo user:', demoUser);
+      
       localStorage.setItem('token', 'demo-token');
       localStorage.setItem('user', JSON.stringify(demoUser));
       setUser(demoUser);
       setLoading(false);
+      
+      console.log('✅ App initialization completed');
     };
 
     initializeApp();
@@ -349,10 +355,14 @@ function App() {
     );
   };
 
+  console.log('🔄 App render - loading:', loading, 'user:', user);
+
   if (loading) {
+    console.log('⏳ Showing loading screen');
     return <div className="loading">読み込み中...</div>;
   }
 
+  console.log('🎯 Rendering main app');
   return (
     <Router>
       <div className="App">
