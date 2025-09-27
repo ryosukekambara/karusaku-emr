@@ -1,9 +1,10 @@
 [build]
   publish = "build"
-  command = "npm run build"
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF"
+  command = "npm run netlify-build"
 
 [build.environment]
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"
   REACT_APP_API_URL = "https://karusaku-emr-aeza.onrender.com"
 
 [[redirects]]
