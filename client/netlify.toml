@@ -1,6 +1,6 @@
 [build]
   publish = "build"
-  command = "rm -rf build && npm run build"
+  command = "rm -rf build && rm -rf node_modules/.cache && npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
