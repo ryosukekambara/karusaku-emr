@@ -303,7 +303,7 @@ const PatientList: React.FC = () => {
                 <th>生年月日</th>
                 <th>フォロー担当</th>
                 <th>最終来店日</th>
-                <th style={{ textAlign: 'left' }}>操作</th>
+                <th style={{ textAlign: 'center' }}>操作</th>
               </tr>
             </thead>
             <tbody>
@@ -328,8 +328,8 @@ const PatientList: React.FC = () => {
                   <td>{patient.date_of_birth}</td>
                   <td>{patient.gender || '未設定'}</td>
                   <td>{new Date(patient.created_at).toLocaleDateString('ja-JP')}</td>
-                  <td style={{ textAlign: 'left' }}>
-                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start' }}>
+                  <td style={{ textAlign: 'center' }}>
+                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
                       <Link to={`/patients/${patient.id}`} className="btn btn-sm btn-secondary">
                         詳細
                       </Link>

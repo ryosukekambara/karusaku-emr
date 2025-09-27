@@ -1915,15 +1915,15 @@ aside.sidebar {
   }
 }
 
-/* 操作列のボタンを左揃えに変更 - 最強適用 */
+/* 操作列のボタンを中央揃えに変更 - 最強適用 */
 .table th:last-child,
 .table td:last-child {
-  text-align: left !important;
+  text-align: center !important;
 }
 
 .table td:last-child .action-buttons {
-  justify-content: flex-start !important;
-  text-align: left !important;
+  justify-content: center !important;
+  text-align: center !important;
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
@@ -1934,20 +1934,20 @@ aside.sidebar {
 /* 操作列のボタン個別スタイル - 最強適用 */
 .table td:last-child .btn {
   margin: 0 !important;
-  text-align: left !important;
+  text-align: center !important;
   display: inline-block !important;
   float: none !important;
 }
 
-/* テーブル全体の操作列を強制左揃え */
+/* テーブル全体の操作列を強制中央揃え */
 .patient-list .table td:last-child,
 .patient-list .table th:last-child {
-  text-align: left !important;
+  text-align: center !important;
 }
 
 .patient-list .table td:last-child .action-buttons {
-  justify-content: flex-start !important;
-  text-align: left !important;
+  justify-content: center !important;
+  text-align: center !important;
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
@@ -1957,7 +1957,7 @@ aside.sidebar {
 
 .patient-list .table td:last-child .btn {
   margin: 0 !important;
-  text-align: left !important;
+  text-align: center !important;
   display: inline-block !important;
   float: none !important;
 }
