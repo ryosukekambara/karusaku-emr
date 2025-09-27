@@ -1,14 +1,11 @@
 [build]
   publish = "build"
-  command = "rm -rf build && rm -rf node_modules && npm install && npm run build && echo 'Build completed at $(date)'"
+  command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
   NPM_VERSION = "9"
   REACT_APP_API_URL = "https://karusaku-emr-aeza.onrender.com"
-  NETLIFY_CACHE_DISABLED = "true"
-  CI = "true"
-  FORCE_REBUILD = "true"
 
 [[redirects]]
   from = "/api/*"
