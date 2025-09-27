@@ -1,7 +1,6 @@
 [build]
   publish = "build"
-  command = "rm -rf build && rm -rf node_modules && npm install && npm run build"
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF"
+  command = "rm -rf build && rm -rf node_modules && npm install && npm run build && echo 'Build completed at $(date)'"
 
 [build.environment]
   NODE_VERSION = "18"
