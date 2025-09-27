@@ -37,7 +37,7 @@ const EditTherapist: React.FC = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token') || 'demo-token';
-      const response = await fetch(`${window.location.origin}/api/therapists/${id}`, {
+      const response = await fetch(`https://karusaku-emr-aeza.onrender.com/api/therapists/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -80,7 +80,7 @@ const EditTherapist: React.FC = () => {
     
     try {
       const token = localStorage.getItem('token') || 'demo-token';
-      const response = await fetch(`${window.location.origin}/api/therapists/${id}`, {
+      const response = await fetch(`https://karusaku-emr-aeza.onrender.com/api/therapists/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

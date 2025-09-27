@@ -78,7 +78,7 @@ const EditMedicalRecord: React.FC = () => {
   const fetchTherapists = async () => {
     try {
       const token = localStorage.getItem('token') || 'demo-token';
-      const response = await fetch(`${window.location.origin}/api/therapists`, {
+      const response = await fetch('https://karusaku-emr-aeza.onrender.com/api/therapists', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -108,7 +108,7 @@ const EditMedicalRecord: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token') || 'demo-token';
-      const response = await fetch(`${window.location.origin}/api/medical-records/${id}`, {
+      const response = await fetch(`https://karusaku-emr-aeza.onrender.com/api/medical-records/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
