@@ -129,6 +129,7 @@ function App() {
             role: 'master',
             department: '管理部'
           };
+          localStorage.setItem('user', JSON.stringify(demoUser));
           setUser(demoUser);
         }
       } catch (error) {
@@ -140,6 +141,8 @@ function App() {
           role: 'master',
           department: '管理部'
         };
+        localStorage.setItem('token', 'demo-token');
+        localStorage.setItem('user', JSON.stringify(demoUser));
         setUser(demoUser);
       } finally {
         setLoading(false);
@@ -188,13 +191,19 @@ function App() {
 
   // ログアウト処理
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-    setSecurityAlert(null);
-    setSidebarOpen(false);
-    // ログイン画面にリダイレクト（ページリロードなし）
-    window.location.href = '/login';
+    try {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setUser(null);
+      setSecurityAlert(null);
+      setSidebarOpen(false);
+      // ログイン画面にリダイレクト
+      window.location.replace('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // エラーの場合は強制的にページをリロード
+      window.location.href = '/';
+    }
   };
 
   // セキュリティアラートをクリア
