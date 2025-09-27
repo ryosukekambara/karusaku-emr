@@ -1,6 +1,7 @@
 [build]
   publish = "build"
   command = "rm -rf build && rm -rf node_modules && npm install && npm run build"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF"
 
 [build.environment]
   NODE_VERSION = "18"
@@ -8,6 +9,7 @@
   REACT_APP_API_URL = "https://karusaku-emr-aeza.onrender.com"
   NETLIFY_CACHE_DISABLED = "true"
   CI = "true"
+  FORCE_REBUILD = "true"
 
 [[redirects]]
   from = "/api/*"
