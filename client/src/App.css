@@ -1914,3 +1914,52 @@ aside.sidebar {
     text-align: center;
   }
 }
+
+/* 操作列のボタンを左揃えに変更 */
+.table td:last-child {
+  text-align: left !important;
+}
+
+.table td:last-child .action-buttons {
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
+
+/* 患者タイプボタンのスタイル */
+.patient-type-btn {
+  padding: 0.25rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.patient-type-btn.new {
+  background: var(--success-color);
+  color: var(--white);
+}
+
+.patient-type-btn.existing {
+  background: var(--text-secondary);
+  color: var(--white);
+}
+
+.patient-type-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 患者リンクのスタイル */
+.patient-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.patient-link:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}

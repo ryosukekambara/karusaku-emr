@@ -17,13 +17,17 @@ const Login: React.FC<LoginProps> = ({ onLogin, securityAlert }) => {
     setError('');
     setLoading(true);
 
-    const success = await onLogin(username, password);
-    if (!success) {
-      // エラーメッセージはApp.tsxで設定されるので、ここでは設定しない
-      console.log('Login failed');
+    try {
+      const success = await onLogin(username, password);
+      if (!success) {
+        console.log('Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('ログインに失敗しました');
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (
@@ -57,7 +61,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, securityAlert }) => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="staff0"
+              placeholder="admin"
               required
             />
           </div>

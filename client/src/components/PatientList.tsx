@@ -83,10 +83,20 @@ const PatientList: React.FC = () => {
 
   const togglePatientType = async (patientId: number, currentType: boolean) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || 'demo-token';
       const newType = !currentType; // 現在の状態を反転
       
-      const response = await fetch(`/api/patients/${patientId}/mark-existing`, {
+      // デモモードの場合は直接ローカル状態を更新
+      if (token === 'demo-token') {
+        setPatients(prev => prev.map(patient => 
+          patient.id === patientId 
+            ? { ...patient, is_new_patient: newType }
+            : patient
+        ));
+        return;
+      }
+      
+      const response = await fetch(`https://karusaku-emr-aeza.onrender.com/api/patients/${patientId}/mark-existing`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
