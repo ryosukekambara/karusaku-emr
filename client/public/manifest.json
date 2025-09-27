@@ -1,0 +1,21 @@
+{
+  "name": "カルサク - 電子カルテシステム",
+  "short_name": "カルサク",
+  "description": "クリニック向け電子カルテアプリ",
+  "start_url": "/login",
+  "display": "standalone",
+  "theme_color": "#27AE60",
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["medical", "productivity", "business"],
+  "lang": "ja",
+  "prefer_related_applications": false
+}
