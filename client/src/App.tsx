@@ -75,14 +75,14 @@ function App() {
   const [securityAlert, setSecurityAlert] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // セキュリティチェック
+  // セキュリティチェック（デモユーザーの場合はスキップ）
   useEffect(() => {
-    const checkSecurity = () => {
-      // デモユーザーの場合はセキュリティチェックをスキップ
-      if (user?.username === 'demo') {
-        return;
-      }
+    // デモユーザーの場合はセキュリティチェックを完全にスキップ
+    if (user?.username === 'demo') {
+      return;
+    }
 
+    const checkSecurity = () => {
       // セッション有効性チェック
       if (user && !sessionManager.isSessionValid()) {
         setSecurityAlert('セッションが期限切れです。再度ログインしてください。');
@@ -112,41 +112,18 @@ function App() {
   // 初期化時のセキュリティチェック
   useEffect(() => {
     const initializeApp = () => {
-      try {
-        // ローカルストレージからユーザー情報を取得
-        const token = localStorage.getItem('token');
-        const userData = localStorage.getItem('user');
-        
-        if (token && userData) {
-          const user = JSON.parse(userData);
-          setUser(user);
-        } else {
-          // トークンがない場合はデモトークンを設定
-          localStorage.setItem('token', 'demo-token');
-          const demoUser: User = {
-            username: 'demo',
-            name: 'デモユーザー',
-            role: 'master',
-            department: '管理部'
-          };
-          localStorage.setItem('user', JSON.stringify(demoUser));
-          setUser(demoUser);
-        }
-      } catch (error) {
-        console.error('Security error during initialization:', error);
-        // エラーの場合はデモユーザーを設定
-        const demoUser: User = {
-          username: 'demo',
-          name: 'デモユーザー',
-          role: 'master',
-          department: '管理部'
-        };
-        localStorage.setItem('token', 'demo-token');
-        localStorage.setItem('user', JSON.stringify(demoUser));
-        setUser(demoUser);
-      } finally {
-        setLoading(false);
-      }
+      // 常にデモユーザーを設定（シンプル化）
+      const demoUser: User = {
+        username: 'demo',
+        name: 'デモユーザー',
+        role: 'master',
+        department: '管理部'
+      };
+      
+      localStorage.setItem('token', 'demo-token');
+      localStorage.setItem('user', JSON.stringify(demoUser));
+      setUser(demoUser);
+      setLoading(false);
     };
 
     initializeApp();
