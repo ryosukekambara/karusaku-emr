@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Download, Upload } from 'lucide-react';
+import config from '../config';
 
 interface Patient {
   id: number;
@@ -31,7 +32,13 @@ const PatientList: React.FC = () => {
     try {
       setLoading(true);
       
-      // オフラインモックデータ（APIリクエストなし）
+      // 拠点別データファイル名を取得
+      const dataFileName = config.getDataFile('customer_data');
+      console.log('Loading data from:', dataFileName, 'for clinic:', config.clinicId);
+      
+      // 将来的にAPIから読み込む場合の準備
+      // const response = await fetch(`/api/patients?clinic=${config.clinicId}`);
+      
       const mockPatients = [
         {
           "id": 1,
@@ -82,7 +89,6 @@ const PatientList: React.FC = () => {
   }, []);
 
   const togglePatientType = (patientId: number, currentType: boolean) => {
-    // 直接ローカル状態を更新（API呼び出しなし）
     const newType = !currentType;
     setPatients(prev => prev.map(patient => 
       patient.id === patientId 
@@ -101,7 +107,6 @@ const PatientList: React.FC = () => {
                            (filterType === 'new' && patient.is_new_patient) ||
                            (filterType === 'existing' && !patient.is_new_patient);
       
-      // 日付フィルター
       let matchesDate = true;
       if (startDate || endDate) {
         const patientDate = new Date(patient.created_at);
@@ -111,16 +116,15 @@ const PatientList: React.FC = () => {
         }
         if (endDate) {
           const end = new Date(endDate);
-          end.setHours(23, 59, 59); // 終了日の23:59:59まで
+          end.setHours(23, 59, 59);
           matchesDate = matchesDate && patientDate <= end;
         }
       }
       
       return matchesSearch && matchesFilter && matchesDate;
     })
-    .sort((a, b) => a.id - b.id); // IDの昇順でソート
+    .sort((a, b) => a.id - b.id);
 
-  // CSVダウンロード機能
   const handleCSVDownload = () => {
     const csvContent = [
       ['ID', '受付', '名前', '電話番号', '生年月日', 'フォロー担当', '最終来店日'],
@@ -139,14 +143,13 @@ const PatientList: React.FC = () => {
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    link.setAttribute('download', `顧客一覧_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `顧客一覧_${config.clinicId}_${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  // CSVアップロード機能
   const handleCSVUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -156,7 +159,6 @@ const PatientList: React.FC = () => {
       const lines = text.split('\n');
       const headers = lines[0].split(',').map(h => h.replace(/"/g, ''));
       
-      // CSVの内容を解析して顧客データとして処理
       const patients = lines.slice(1).filter(line => line.trim()).map(line => {
         const values = line.split(',').map(v => v.replace(/"/g, ''));
         return {
@@ -168,7 +170,6 @@ const PatientList: React.FC = () => {
         };
       });
 
-      // サーバーにCSVデータを送信
       const token = localStorage.getItem('token');
       const response = await fetch('/api/patients/import-csv', {
         method: 'POST',
@@ -176,12 +177,12 @@ const PatientList: React.FC = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ patients }),
+        body: JSON.stringify({ patients, clinicId: config.clinicId }),
       });
 
       if (response.ok) {
         alert('CSVインポートが完了しました');
-        fetchPatients(); // 顧客リストを再取得
+        fetchPatients();
       } else {
         alert('CSVインポートに失敗しました');
       }
@@ -190,7 +191,6 @@ const PatientList: React.FC = () => {
       alert('CSVインポートに失敗しました');
     }
 
-    // ファイル入力をリセット
     event.target.value = '';
   };
 
@@ -201,7 +201,7 @@ const PatientList: React.FC = () => {
   return (
     <div className="container">
       <div className="page-header">
-        <h1>顧客一覧</h1>
+      <h1>顧客管理 - {config.clinicName}</h1>
         <Link to="/patients/add" className="btn btn-primary">
           + 新規顧客登録
         </Link>
@@ -209,7 +209,6 @@ const PatientList: React.FC = () => {
 
       {error && <div className="alert alert-danger">{error}</div>}
 
-      {/* 検索・フィルター */}
       <div className="search-filter-section">
         <div className="search-controls">
           <div className="search-box">
@@ -296,38 +295,75 @@ const PatientList: React.FC = () => {
           <table className="table">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>受付</th>
-                <th>名前</th>
-                <th>電話番号</th>
-                <th>生年月日</th>
-                <th>フォロー担当</th>
-                <th>最終来店日</th>
+                <th style={{ textAlign: 'center' }}>ID</th>
+                <th style={{ textAlign: 'center' }}>受付</th>
+                <th style={{ textAlign: 'center' }}>名前</th>
+                <th style={{ textAlign: 'center' }}>電話番号</th>
+                <th style={{ textAlign: 'center' }}>生年月日</th>
+                <th style={{ textAlign: 'center' }}>フォロー担当</th>
+                <th style={{ textAlign: 'center' }}>最終来店日</th>
                 <th style={{ textAlign: 'center' }}>操作</th>
               </tr>
             </thead>
             <tbody>
               {filteredPatients.map(patient => (
                 <tr key={patient.id}>
-                  <td>{patient.id}</td>
-                  <td>
-                    <button
-                      onClick={() => togglePatientType(patient.id, patient.is_new_patient)}
-                      className={`patient-type-btn ${patient.is_new_patient ? 'new' : 'existing'}`}
-                      title={patient.is_new_patient ? 'クリックで既存顧客に変更' : 'クリックで新規顧客に変更'}
-                    >
-                      {patient.is_new_patient ? '新規' : '既存'}
-                    </button>
+                  <td style={{ textAlign: 'center' }}>{patient.id}</td>
+                  <td style={{ textAlign: 'center' }}>
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                      <span
+                        onClick={() => togglePatientType(patient.id, patient.is_new_patient)}
+                        onMouseEnter={(e) => {
+                          const tooltip = e.currentTarget.querySelector('.tooltip');
+                          if (tooltip) (tooltip as HTMLElement).style.visibility = 'visible';
+                        }}
+                        onMouseLeave={(e) => {
+                          const tooltip = e.currentTarget.querySelector('.tooltip');
+                          if (tooltip) (tooltip as HTMLElement).style.visibility = 'hidden';
+                        }}
+                        style={{
+                          cursor: 'pointer',
+                          padding: '0.25rem 0.5rem',
+                          borderRadius: '0.25rem',
+                          backgroundColor: patient.is_new_patient ? '#10b981' : '#6b7280',
+                          color: 'white',
+                          fontSize: '0.875rem',
+                          display: 'inline-block'
+                        }}
+                      >
+                        {patient.is_new_patient ? '新規' : '既存'}
+                        <span 
+                          className="tooltip"
+                          style={{
+                            visibility: 'hidden',
+                            position: 'absolute',
+                            bottom: '100%',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            backgroundColor: '#374151',
+                            color: 'white',
+                            padding: '0.25rem 0.5rem',
+                            borderRadius: '0.25rem',
+                            fontSize: '0.75rem',
+                            whiteSpace: 'nowrap',
+                            marginBottom: '0.25rem',
+                            zIndex: 10
+                          }}
+                        >
+                          クリックで{patient.is_new_patient ? '既存' : '新規'}顧客に変更
+                        </span>
+                      </span>
+                    </div>
                   </td>
-                  <td>
+                  <td style={{ textAlign: 'center' }}>
                     <Link to={`/patients/${patient.id}`} className="patient-link">
                       {patient.name}
                     </Link>
                   </td>
-                  <td>{patient.phone}</td>
-                  <td>{patient.date_of_birth}</td>
-                  <td>{patient.gender || '未設定'}</td>
-                  <td>{new Date(patient.created_at).toLocaleDateString('ja-JP')}</td>
+                  <td style={{ textAlign: 'center' }}>{patient.phone}</td>
+                  <td style={{ textAlign: 'center' }}>{patient.date_of_birth}</td>
+                  <td style={{ textAlign: 'center' }}>{patient.gender || '未設定'}</td>
+                  <td style={{ textAlign: 'center' }}>{new Date(patient.created_at).toLocaleDateString('ja-JP')}</td>
                   <td style={{ textAlign: 'center' }}>
                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
                       <Link to={`/patients/${patient.id}`} className="btn btn-sm btn-secondary">

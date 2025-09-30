@@ -19,6 +19,11 @@ const PORT = process.env.PORT || 3001;
 // ワークフローエンジン初期化
 const workflowEngine = new WorkflowEngine();
 
+// 拠点別データファイル取得関数
+function getDataFilePath(clinicId = 'clinic001') {
+  return path.join(__dirname, `customer_data_${clinicId}.json`);
+}
+
 // バックアップ設定
 const BACKUP_CONFIG = {
   enabled: process.env.AUTO_BACKUP === 'true' || true,
