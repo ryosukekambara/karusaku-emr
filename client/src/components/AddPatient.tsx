@@ -325,7 +325,9 @@ const AddPatient: React.FC = () => {
 
           <div className="form-group">
             <label htmlFor="date_of_birth">生年月日 *</label>
-            <div className="date-input-group">
+            
+            {/* 選択式入力 */}
+            <div className="date-input-group" style={{ marginBottom: '10px' }}>
               <select
                 id="birth_year"
                 name="birth_year"
@@ -334,9 +336,10 @@ const AddPatient: React.FC = () => {
                 required
                 disabled={loading}
                 className="date-select"
+                style={{ maxHeight: '200px' }}
               >
                 <option value="">年</option>
-                {Array.from({ length: 76 }, (_, i) => 1950 + i).map(year => (
+                {Array.from({ length: 121 }, (_, i) => 2025 - i).reverse().map(year => (
                   <option key={year} value={year}>{year}年</option>
                 ))}
               </select>
@@ -348,6 +351,7 @@ const AddPatient: React.FC = () => {
                 required
                 disabled={loading}
                 className="date-select"
+                style={{ maxHeight: '200px' }}
               >
                 <option value="">月</option>
                 {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
@@ -364,6 +368,7 @@ const AddPatient: React.FC = () => {
                 required
                 disabled={loading}
                 className="date-select"
+                style={{ maxHeight: '200px' }}
               >
                 <option value="">日</option>
                 {Array.from({ length: getDaysInMonth(formData.birth_year, formData.birth_month) }, (_, i) => i + 1).map(day => (
@@ -373,7 +378,58 @@ const AddPatient: React.FC = () => {
                 ))}
               </select>
             </div>
+            
+            {/* 手動入力（日付ピッカー） */}
+            <div style={{ marginTop: '10px' }}>
+              <small style={{ display: 'block', marginBottom: '5px', color: '#666' }}>
+                または直接入力:
+              </small>
+              <input
+                type="date"
+                id="date_of_birth_manual"
+                name="date_of_birth_manual"
+                value={formData.date_of_birth || ''}
+                onChange={(e) => {
+                  const dateValue = e.target.value;
+                  if (dateValue) {
+                    const [year, month, day] = dateValue.split('-');
+                    setFormData(prev => ({
+                      ...prev,
+                      date_of_birth: dateValue,
+                      birth_year: year,
+                      birth_month: month,
+                      birth_day: day
+                    }));
+                  }
+                }}
+                disabled={loading}
+                min="1905-01-01"
+                max="2025-12-31"
+                style={{
+                  padding: '8px',
+                  fontSize: '14px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  width: '100%',
+                  maxWidth: '200px'
+                }}
+              />
+            </div>
           </div>
+
+          <div className="form-group">
+            <label htmlFor="gender">性別 *</label>
+            <select
+              id="gender"
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              required
+              disabled={loading}
+            >
+              <option value="">選択してください</option>
+              <option value="男性">男性</option>
+              <option value="女性">女性</option>
 
           <div className="form-group">
             <label htmlFor="gender">性別 *</label>
@@ -408,7 +464,7 @@ const AddPatient: React.FC = () => {
           <div className="form-group">
             <label htmlFor="postal_code">郵便番号</label>
             <input
-              type="text"
+              type="tel"
               id="postal_code"
               name="postal_code"
               value={formData.postal_code}
