@@ -143,8 +143,9 @@ function App() {
   const handleLogin = async (username: string, password: string) => {
     try {
       // デモアカウントの場合は直接ログイン
-      if ((username === 'admin' && password === 'admin123') || 
-          (username === 'doctor1' && password === 'doctor123')) {
+      // 修正後
+if ((username === 'admin' && password === 'admin123') || 
+(username === 'staff' && password === 'staff123')) {
         const userData: User = {
           username: username,
           name: username === 'admin' ? '管理者' : 'スタッフ',
@@ -244,8 +245,13 @@ function App() {
     }
 
     return (
-      <>
+             {/* オーバーレイ（背景タップで閉じる） */}
         <div 
+          className="sidebar-overlay active"
+          onClick={() => setSidebarOpen(false)}
+          style={{ display: "block" }}
+        />
+        <div
           className="sidebar"
           style={{
             position: 'fixed',
@@ -356,7 +362,7 @@ function App() {
             <span className="user-name">{user?.name}</span>
             <button onClick={handleLogout} className="header-logout-btn">
               <LogOut size={20} />
-            </button>
+          ' client/src/App.tsx<>  </button>
           </div>
         </div>
         
