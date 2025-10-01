@@ -379,7 +379,7 @@ const AddPatient: React.FC = () => {
               </select>
             </div>
             
-            {/* 手動入力（日付ピッカー） */}
+            {/* 手動入力 */}
             <div style={{ marginTop: '10px' }}>
               <small style={{ display: 'block', marginBottom: '5px', color: '#666' }}>
                 または直接入力:
@@ -387,7 +387,6 @@ const AddPatient: React.FC = () => {
               <input
                 type="date"
                 id="date_of_birth_manual"
-                name="date_of_birth_manual"
                 value={formData.date_of_birth || ''}
                 onChange={(e) => {
                   const dateValue = e.target.value;
@@ -430,7 +429,9 @@ const AddPatient: React.FC = () => {
               <option value="">選択してください</option>
               <option value="男性">男性</option>
               <option value="女性">女性</option>
-
+              <option value="その他">その他</option>
+            </select>
+          </div>
           <div className="form-group">
             <label htmlFor="gender">性別 *</label>
             <select
