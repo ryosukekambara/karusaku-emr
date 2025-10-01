@@ -24,7 +24,6 @@ import {
   LogOut
 } from 'lucide-react';
 
-// コンポーネントのインポート
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import PatientList from './components/PatientList';
@@ -50,10 +49,8 @@ import WorkflowManagement from './components/WorkflowManagement';
 import MessageTemplateEditor from './components/MessageTemplateEditor';
 import LineBotManagement from './components/LineBotManagement';
 
-// セキュリティ機能のインポート
 import { sessionManager } from './utils/security';
 
-// ユーザー型定義
 interface User {
   username: string;
   name: string;
@@ -61,7 +58,6 @@ interface User {
   department: string;
 }
 
-// サイドバーアイテム型定義
 interface SidebarItem {
   label: string;
   path: string;
@@ -75,77 +71,58 @@ function App() {
   const [securityAlert, setSecurityAlert] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // セキュリティチェック（デモユーザーの場合はスキップ）
   useEffect(() => {
-    // デモユーザーの場合はセキュリティチェックを完全にスキップ
     if (user?.username === 'demo') {
       return;
     }
 
     const checkSecurity = () => {
-      // セッション有効性チェック
       if (user && !sessionManager.isSessionValid()) {
         setSecurityAlert('セッションが期限切れです。再度ログインしてください。');
         handleLogout();
         return;
       }
 
-      // 自動ログアウトチェック
       if (user && sessionManager.shouldAutoLogout()) {
         setSecurityAlert('長時間の操作がないため、自動ログアウトしました。');
         handleLogout();
         return;
       }
 
-      // セッション更新
       if (user) {
         sessionManager.refreshSession();
       }
     };
 
-    // 定期的なセキュリティチェック
-    const securityInterval = setInterval(checkSecurity, 60000); // 1分ごと
-
+    const securityInterval = setInterval(checkSecurity, 60000);
     return () => clearInterval(securityInterval);
   }, [user]);
 
-  // 初期化時の認証チェック
   useEffect(() => {
     const initializeApp = () => {
-      console.log('🚀 App initialization started');
-      
-      // ローカルストレージからユーザー情報を取得
       const token = localStorage.getItem('token');
       const userData = localStorage.getItem('user');
       
       if (token && userData) {
         try {
           const parsedUser = JSON.parse(userData);
-          console.log('👤 Found existing user:', parsedUser);
           setUser(parsedUser);
         } catch (error) {
-          console.error('❌ Error parsing user data:', error);
           localStorage.removeItem('token');
           localStorage.removeItem('user');
         }
-      } else {
-        console.log('👤 No existing user found');
       }
       
       setLoading(false);
-      console.log('✅ App initialization completed');
     };
 
     initializeApp();
   }, []);
 
-  // ログイン処理
   const handleLogin = async (username: string, password: string) => {
     try {
-      // デモアカウントの場合は直接ログイン
-      // 修正後
-if ((username === 'admin' && password === 'admin123') || 
-(username === 'staff' && password === 'staff123')) {
+      if ((username === 'admin' && password === 'admin123') || 
+          (username === 'staff' && password === 'staff123')) {
         const userData: User = {
           username: username,
           name: username === 'admin' ? '管理者' : 'スタッフ',
@@ -160,7 +137,6 @@ if ((username === 'admin' && password === 'admin123') ||
         return true;
       }
 
-      // 通常のAPIログイン
       const response = await fetch(API_ENDPOINTS.AUTH.LOGIN, {
         method: 'POST',
         headers: {
@@ -189,13 +165,11 @@ if ((username === 'admin' && password === 'admin123') ||
         return false;
       }
     } catch (error) {
-      console.error('Login error:', error);
       setSecurityAlert('サーバーに接続できません。ネットワークを確認してください。');
       return false;
     }
   };
 
-  // ログアウト処理
   const handleLogout = () => {
     try {
       localStorage.removeItem('token');
@@ -203,21 +177,16 @@ if ((username === 'admin' && password === 'admin123') ||
       setUser(null);
       setSecurityAlert(null);
       setSidebarOpen(false);
-      // ログイン画面にリダイレクト
       window.location.replace('/login');
     } catch (error) {
-      console.error('Logout error:', error);
-      // エラーの場合は強制的にページをリロード
       window.location.href = '/';
     }
   };
 
-  // セキュリティアラートをクリア
   const clearSecurityAlert = () => {
     setSecurityAlert(null);
   };
 
-  // サイドバーアイテム
   const sidebarItems: SidebarItem[] = [
     { label: 'ダッシュボード', path: '/dashboard', icon: 'BarChart3', role: 'all' },
     { label: '顧客管理', path: '/patients', icon: 'Users', role: 'all' },
@@ -237,21 +206,28 @@ if ((username === 'admin' && password === 'admin123') ||
     { label: '設定', path: '/settings', icon: 'Settings', role: 'master' },
   ];
 
-  // サイドバーコンポーネント
   const Sidebar = ({ user }: { user: User }) => {
-    // 条件付きレンダリングで完全に瞬時表示・非表示
     if (!sidebarOpen) {
       return null;
     }
 
     return (
-             {/* オーバーレイ（背景タップで閉じる） */}
+      <>
+        {sidebarOpen && (
+          <div 
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 999
+            }}
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
         <div 
-          className="sidebar-overlay active"
-          onClick={() => setSidebarOpen(false)}
-          style={{ display: "block" }}
-        />
-        <div
           className="sidebar"
           style={{
             position: 'fixed',
@@ -267,76 +243,74 @@ if ((username === 'admin' && password === 'admin123') ||
           }}
           onMouseLeave={() => setSidebarOpen(false)}
         >
-            <div className="sidebar-header">
-              <h2>カルサク</h2>
-              <p>電子カルテシステム</p>
-              <button 
-                className="sidebar-close-btn"
-                onClick={() => setSidebarOpen(false)}
-              >
-                <X size={20} />
-              </button>
-            </div>
-            <nav className="sidebar-nav">
-              {sidebarItems
-            .filter(item => item.role === 'all' || item.role === user.role)
-            .map((item, index) => {
-              const getIcon = (iconName: string) => {
-                switch (iconName) {
-                  case 'BarChart3': return <BarChart3 size={20} />;
-                  case 'Users': return <Users size={20} />;
-                  case 'UserPlus': return <UserPlus size={20} />;
-                  case 'FileText': return <FileText size={20} />;
-                  case 'Calendar': return <Calendar size={20} />;
-                  case 'Stethoscope': return <Stethoscope size={20} />;
-                  case 'UserCheck': return <UserCheck size={20} />;
-                  case 'Receipt': return <Receipt size={20} />;
-                  case 'UserCog': return <UserCog size={20} />;
-                  case 'Calculator': return <Calculator size={20} />;
-                  case 'MessageSquare': return <MessageSquare size={20} />;
-                  case 'Bot': return <Bot size={20} />;
-                  case 'HardDrive': return <HardDrive size={20} />;
-                  case 'Workflow': return <Workflow size={20} />;
-                  case 'TrendingUp': return <TrendingUp size={20} />;
-                  case 'Settings': return <Settings size={20} />;
-                  default: return null;
-                }
-              };
+          <div className="sidebar-header">
+            <h2>カルサク</h2>
+            <p>電子カルテシステム</p>
+            <button 
+              className="sidebar-close-btn"
+              onClick={() => setSidebarOpen(false)}
+            >
+              <X size={20} />
+            </button>
+          </div>
+          <nav className="sidebar-nav">
+            {sidebarItems
+              .filter(item => item.role === 'all' || item.role === user.role)
+              .map((item, index) => {
+                const getIcon = (iconName: string) => {
+                  switch (iconName) {
+                    case 'BarChart3': return <BarChart3 size={20} />;
+                    case 'Users': return <Users size={20} />;
+                    case 'UserPlus': return <UserPlus size={20} />;
+                    case 'FileText': return <FileText size={20} />;
+                    case 'Calendar': return <Calendar size={20} />;
+                    case 'Stethoscope': return <Stethoscope size={20} />;
+                    case 'UserCheck': return <UserCheck size={20} />;
+                    case 'Receipt': return <Receipt size={20} />;
+                    case 'UserCog': return <UserCog size={20} />;
+                    case 'Calculator': return <Calculator size={20} />;
+                    case 'MessageSquare': return <MessageSquare size={20} />;
+                    case 'Bot': return <Bot size={20} />;
+                    case 'HardDrive': return <HardDrive size={20} />;
+                    case 'Workflow': return <Workflow size={20} />;
+                    case 'TrendingUp': return <TrendingUp size={20} />;
+                    case 'Settings': return <Settings size={20} />;
+                    default: return null;
+                  }
+                };
 
-              return (
-                <Link
-                  key={index}
-                  to={item.path}
-                  className="sidebar-item"
-                >
-                  <span className="sidebar-icon">
-                    {getIcon(item.icon)}
-                  </span>
-                  <span className="sidebar-label">{item.label}</span>
-                </Link>
-              );
-            })}
-            </nav>
-            <div className="sidebar-footer">
-              <div className="user-info">
-                <span>{user.name}</span>
-                <span className="user-role">{user.role === 'master' ? 'マスター' : 'スタッフ'}</span>
-              </div>
-              <button onClick={handleLogout} className="logout-btn">
-                ログアウト
-              </button>
+                return (
+                  <Link
+                    key={index}
+                    to={item.path}
+                    className="sidebar-item"
+                  >
+                    <span className="sidebar-icon">
+                      {getIcon(item.icon)}
+                    </span>
+                    <span className="sidebar-label">{item.label}</span>
+                  </Link>
+                );
+              })}
+          </nav>
+          <div className="sidebar-footer">
+            <div className="user-info">
+              <span>{user.name}</span>
+              <span className="user-role">{user.role === 'master' ? 'マスター' : 'スタッフ'}</span>
             </div>
+            <button onClick={handleLogout} className="logout-btn">
+              ログアウト
+            </button>
+          </div>
         </div>
       </>
     );
   };
 
-  // メインレイアウト
   const MainLayout = ({ children }: { children: React.ReactNode }) => {
-    // メインコンテンツのスタイルをJavaScriptで直接制御（固定位置）
     const mainContentStyle = {
       marginLeft: '0',
-      marginTop: '60px', // ヘッダーの高さ分だけ下げる
+      marginTop: '60px',
       transition: 'none',
       minHeight: 'calc(100vh - 60px)',
       padding: '20px',
@@ -349,7 +323,6 @@ if ((username === 'admin' && password === 'admin123') ||
 
     return (
       <div className="app-layout">
-        {/* ヘッダー */}
         <div className="app-header">
           <button 
             className="hamburger-menu"
@@ -362,7 +335,7 @@ if ((username === 'admin' && password === 'admin123') ||
             <span className="user-name">{user?.name}</span>
             <button onClick={handleLogout} className="header-logout-btn">
               <LogOut size={20} />
-          ' client/src/App.tsx<>  </button>
+            </button>
           </div>
         </div>
         
@@ -383,14 +356,10 @@ if ((username === 'admin' && password === 'admin123') ||
     );
   };
 
-  console.log('🔄 App render - loading:', loading, 'user:', user);
-
   if (loading) {
-    console.log('⏳ Showing loading screen');
     return <div className="loading">読み込み中...</div>;
   }
 
-  console.log('🎯 Rendering main app');
   return (
     <Router>
       <div className="App">
@@ -417,198 +386,30 @@ if ((username === 'admin' && password === 'admin123') ||
           />
           {user && (
             <>
-              <Route
-                path="/dashboard"
-                element={
-                  <MainLayout>
-                    <Dashboard />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/patients"
-                element={
-                  <MainLayout>
-                    <PatientList />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/patients/add"
-                element={
-                  <MainLayout>
-                    <AddPatient />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/patients/:id"
-                element={
-                  <MainLayout>
-                    <PatientDetail />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/patients/:id/records/add"
-                element={
-                  <MainLayout>
-                    <AddMedicalRecord />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/medical-records/:id/edit"
-                element={
-                  <MainLayout>
-                    <EditMedicalRecord />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/patients/:id/treatment"
-                element={
-                  <MainLayout>
-                    <TreatmentRecord />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/medical-records"
-                element={
-                  <MainLayout>
-                    <MedicalRecordList />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/appointments"
-                element={
-                  <MainLayout>
-                    <AddAppointment />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/appointments/add"
-                element={
-                  <MainLayout>
-                    <AddAppointment />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/menu-management"
-                element={
-                  <MainLayout>
-                    <MenuManagement />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/therapists"
-                element={
-                  <MainLayout>
-                    <TherapistList />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/therapists/add"
-                element={
-                  <MainLayout>
-                    <AddTherapist />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/therapists/edit/:id"
-                element={
-                  <MainLayout>
-                    <EditTherapist />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/employees"
-                element={
-                  <MainLayout>
-                    <EmployeeManagement />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/wage-calculation"
-                element={
-                  <MainLayout>
-                    <WageCalculation />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/message-editor"
-                element={
-                  <MainLayout>
-                    <MessageTemplateEditor />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/line-bot"
-                element={
-                  <MainLayout>
-                    <LineBotManagement />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/receipts"
-                element={
-                  <MainLayout>
-                    <ReceiptManagement />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/backup"
-                element={
-                  <MainLayout>
-                    <BackupManagement />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/workflow"
-                element={
-                  <MainLayout>
-                    <WorkflowManagement />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/reports"
-                element={
-                  <MainLayout>
-                    <Reports />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/settings"
-                element={
-                  <MainLayout>
-                    <SettingsComponent />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/clinic"
-                element={
-                  <MainLayout>
-                    <ClinicManagement />
-                  </MainLayout>
-                }
-              />
+              <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
+              <Route path="/patients" element={<MainLayout><PatientList /></MainLayout>} />
+              <Route path="/patients/add" element={<MainLayout><AddPatient /></MainLayout>} />
+              <Route path="/patients/:id" element={<MainLayout><PatientDetail /></MainLayout>} />
+              <Route path="/patients/:id/records/add" element={<MainLayout><AddMedicalRecord /></MainLayout>} />
+              <Route path="/medical-records/:id/edit" element={<MainLayout><EditMedicalRecord /></MainLayout>} />
+              <Route path="/patients/:id/treatment" element={<MainLayout><TreatmentRecord /></MainLayout>} />
+              <Route path="/medical-records" element={<MainLayout><MedicalRecordList /></MainLayout>} />
+              <Route path="/appointments" element={<MainLayout><AddAppointment /></MainLayout>} />
+              <Route path="/appointments/add" element={<MainLayout><AddAppointment /></MainLayout>} />
+              <Route path="/menu-management" element={<MainLayout><MenuManagement /></MainLayout>} />
+              <Route path="/therapists" element={<MainLayout><TherapistList /></MainLayout>} />
+              <Route path="/therapists/add" element={<MainLayout><AddTherapist /></MainLayout>} />
+              <Route path="/therapists/edit/:id" element={<MainLayout><EditTherapist /></MainLayout>} />
+              <Route path="/employees" element={<MainLayout><EmployeeManagement /></MainLayout>} />
+              <Route path="/wage-calculation" element={<MainLayout><WageCalculation /></MainLayout>} />
+              <Route path="/message-editor" element={<MainLayout><MessageTemplateEditor /></MainLayout>} />
+              <Route path="/line-bot" element={<MainLayout><LineBotManagement /></MainLayout>} />
+              <Route path="/receipts" element={<MainLayout><ReceiptManagement /></MainLayout>} />
+              <Route path="/backup" element={<MainLayout><BackupManagement /></MainLayout>} />
+              <Route path="/workflow" element={<MainLayout><WorkflowManagement /></MainLayout>} />
+              <Route path="/reports" element={<MainLayout><Reports /></MainLayout>} />
+              <Route path="/settings" element={<MainLayout><SettingsComponent /></MainLayout>} />
+              <Route path="/clinic" element={<MainLayout><ClinicManagement /></MainLayout>} />
             </>
           )}
         </Routes>
