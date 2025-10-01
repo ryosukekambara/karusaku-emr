@@ -432,22 +432,6 @@ const AddPatient: React.FC = () => {
               <option value="その他">その他</option>
             </select>
           </div>
-          <div className="form-group">
-            <label htmlFor="gender">性別 *</label>
-            <select
-              id="gender"
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              required
-              disabled={loading}
-            >
-              <option value="">選択してください</option>
-              <option value="男性">男性</option>
-              <option value="女性">女性</option>
-              <option value="その他">その他</option>
-            </select>
-          </div>
 
           <div className="form-group">
             <label htmlFor="phone">電話番号</label>
