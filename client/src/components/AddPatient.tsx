@@ -291,6 +291,14 @@ const AddPatient: React.FC = () => {
     } finally {
       setLoading(false);
     }
+
+  // 和暦変換関数
+  const getJapaneseEra = (year: number): string => {
+    if (year >= 2019) return `令和${year - 2018}年`;
+    if (year >= 1989) return `平成${year - 1988}年`;
+    if (year >= 1926) return `昭和${year - 1925}年`;
+    return "";
+  };
   };
 
   return (
@@ -339,8 +347,8 @@ const AddPatient: React.FC = () => {
                 style={{ maxHeight: '200px' }}
               >
                 <option value="">年</option>
-                {Array.from({ length: 121 }, (_, i) => 2025 - i).reverse().map(year => (
-                  <option key={year} value={year}>{year}年</option>
+                {Array.from({ length: 96 }, (_, i) => 2025 - i).reverse().map(year => (
+                  <option key={year} value={year}>{year}年（{getJapaneseEra(year)}）</option>
                 ))}
               </select>
               <select
@@ -379,42 +387,6 @@ const AddPatient: React.FC = () => {
               </select>
             </div>
             
-            {/* 手動入力 */}
-            <div style={{ marginTop: '10px' }}>
-              <small style={{ display: 'block', marginBottom: '5px', color: '#666' }}>
-                または直接入力:
-              </small>
-              <input
-                type="date"
-                id="date_of_birth_manual"
-                value={formData.date_of_birth || ''}
-                onChange={(e) => {
-                  const dateValue = e.target.value;
-                  if (dateValue) {
-                    const [year, month, day] = dateValue.split('-');
-                    setFormData(prev => ({
-                      ...prev,
-                      date_of_birth: dateValue,
-                      birth_year: year,
-                      birth_month: month,
-                      birth_day: day
-                    }));
-                  }
-                }}
-                disabled={loading}
-                min="1905-01-01"
-                max="2025-12-31"
-                style={{
-                  padding: '8px',
-                  fontSize: '14px',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  width: '100%',
-                  maxWidth: '200px'
-                }}
-              />
-            </div>
-          </div>
 
           <div className="form-group">
             <label htmlFor="gender">性別 *</label>
