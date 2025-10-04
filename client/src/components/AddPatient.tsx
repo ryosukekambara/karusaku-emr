@@ -385,6 +385,7 @@ const AddPatient: React.FC = () => {
                   </option>
                 ))}
               </select>
+          </div>
             </div>
             
 
