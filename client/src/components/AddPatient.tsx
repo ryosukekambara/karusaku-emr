@@ -300,7 +300,6 @@ const AddPatient: React.FC = () => {
     return "";
   };
   };
-  return (
     <div className="container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1>新規顧客登録</h1>
