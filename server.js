@@ -2355,12 +2355,13 @@ app.post('/webhook/bot-b', (req, res) => {
 });
 
 // 静的ファイルの提供（APIルートの後）
-app.use(express.static(path.join(__dirname, 'client/build')));
+// NOTE: フロントエンドはVercelにデプロイ済みのためコメントアウト
+// app.use(express.static(path.join(__dirname, 'client/build')));
 
 // 全ルートをReactアプリにリダイレクト（最後）
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+// });
 
 // エラーハンドリングミドルウェア（最後に配置）
 app.use(errorHandler);
