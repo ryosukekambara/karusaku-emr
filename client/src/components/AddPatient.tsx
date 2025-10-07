@@ -292,6 +292,7 @@ const AddPatient: React.FC = () => {
       setLoading(false);
     }
 
+  };
   // 和暦変換関数
   const getJapaneseEra = (year: number): string => {
     if (year >= 2019) return `令和${year - 2018}年`;
@@ -299,7 +300,9 @@ const AddPatient: React.FC = () => {
     if (year >= 1926) return `昭和${year - 1925}年`;
     return "";
   };
-  };
+
+  return (
+    <div className="container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1>新規顧客登録</h1>
         <button onClick={() => navigate('/patients')} className="btn btn-secondary">
@@ -694,9 +697,9 @@ const AddPatient: React.FC = () => {
               キャンセル
             </button>
           </div>
-        </form>
+          </form>
       </div>
-    </div>
+    </div> 
   );
 };
 
