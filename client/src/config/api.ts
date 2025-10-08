@@ -1,5 +1,5 @@
 // API設定
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr-aeza.onrender.com';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr-backend.onrender.com';
 
 export const apiConfig = {
   baseURL: API_BASE_URL,
@@ -21,7 +21,7 @@ export const apiConfig = {
 export const API_ENDPOINTS = {
   HEALTH: '/api/health',
   AUTH: {
-    LOGIN: '/api/auth/login',
+    LOGIN: '/api/login',
   },
   PATIENTS: '/api/patients',
   MEDICAL_RECORDS: '/api/medical-records',

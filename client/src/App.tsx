@@ -121,21 +121,6 @@ function App() {
 
   const handleLogin = async (username: string, password: string) => {
     try {
-      if ((username === 'admin' && password === 'admin123') || 
-          (username === 'staff' && password === 'staff123')) {
-        const userData: User = {
-          username: username,
-          name: username === 'admin' ? '管理者' : 'スタッフ',
-          role: username === 'admin' ? 'master' : 'staff',
-          department: '管理部'
-        };
-
-        localStorage.setItem('token', 'demo-token');
-        localStorage.setItem('user', JSON.stringify(userData));
-        setUser(userData);
-        setSecurityAlert(null);
-        return true;
-      }
 
       const response = await fetch(API_ENDPOINTS.AUTH.LOGIN, {
         method: 'POST',
