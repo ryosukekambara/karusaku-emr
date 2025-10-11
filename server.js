@@ -71,17 +71,17 @@ const BACKUP_PLANS = {
 
 // 全社員ログイン設定
 const COMPANY_USERS = {
+  'admin': {
+    password: 'admin123',
+    name: '管理者',
+    role: 'master',  // ← 重要！masterに設定
+    department: '管理部'
+  },
   'staff0': {
     password: 'staff0',
     name: 'マスター',
     role: 'master',
     department: '管理部'
-  },
-  'staff1': {
-    password: 'staff1',
-    name: 'スタッフ',
-    role: 'staff',
-    department: '営業部'
   }
 };
 
@@ -605,7 +605,6 @@ const authenticateToken = (req, res, next) => {
 
   // デモトークンの認証（開発・テスト用）
   if (token === 'demo-token') {
-    req.user = { id: 'demo', username: 'demo', role: 'admin' };
     return next();
   }
 
@@ -645,6 +644,15 @@ const errorHandler = (err, req, res, next) => {
     error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message 
   });
 };
+
+// ヘルスチェックエンドポイント
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    database: db ? 'connected' : 'disconnected'
+  });
+});
 
 // APIルート（静的ファイルの提供より前に配置）
 app.post('/api/login', (req, res) => {
