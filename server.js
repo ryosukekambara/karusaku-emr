@@ -186,8 +186,8 @@ app.post('/api/patients', authenticateToken, (req, res) => {
   const { name, date_of_birth, gender, phone, address, emergency_contact } = req.body;
 
   pool.query(
-    'INSERT INTO patients (name, date_of_birth, gender, phone, address, emergency_contact) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
-    [name, date_of_birth, gender, phone, address, emergency_contact],
+    'INSERT INTO patients (name, date_of_birth, gender, phone, address, emergency_contact, clinic_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+    [name, date_of_birth, gender, phone, address, emergency_contact, 'clinic001'],
     (err, result) => {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
