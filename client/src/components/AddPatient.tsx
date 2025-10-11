@@ -269,8 +269,8 @@ const AddPatient: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const API_URL = process.env.REACT_APP_API_URL || '';
-const response = await fetch(`${API_URL}/api/patients`, {
+      const API_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr-backend.onrender.com';
+　　　 const response = await fetch(`${API_URL}/api/patients`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
