@@ -269,7 +269,8 @@ const AddPatient: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/patients', {
+      const API_URL = process.env.REACT_APP_API_URL || '';
+const response = await fetch(`${API_URL}/api/patients`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -291,14 +292,6 @@ const AddPatient: React.FC = () => {
     } finally {
       setLoading(false);
     }
-
-  };
-  // 和暦変換関数
-  const getJapaneseEra = (year: number): string => {
-    if (year >= 2019) return `令和${year - 2018}年`;
-    if (year >= 1989) return `平成${year - 1988}年`;
-    if (year >= 1926) return `昭和${year - 1925}年`;
-    return "";
   };
 
   return (
@@ -333,9 +326,7 @@ const AddPatient: React.FC = () => {
 
           <div className="form-group">
             <label htmlFor="date_of_birth">生年月日 *</label>
-            
-            {/* 選択式入力 */}
-            <div className="date-input-group" style={{ marginBottom: '10px' }}>
+            <div className="date-input-group">
               <select
                 id="birth_year"
                 name="birth_year"
@@ -344,11 +335,10 @@ const AddPatient: React.FC = () => {
                 required
                 disabled={loading}
                 className="date-select"
-                style={{ maxHeight: '200px' }}
               >
                 <option value="">年</option>
-                {Array.from({ length: 96 }, (_, i) => 2025 - i).reverse().map(year => (
-                  <option key={year} value={year}>{year}年（{getJapaneseEra(year)}）</option>
+                {Array.from({ length: 121 }, (_, i) => 1905 + i).map(year => (
+                  <option key={year} value={year}>{year}年</option>
                 ))}
               </select>
               <select
@@ -359,7 +349,6 @@ const AddPatient: React.FC = () => {
                 required
                 disabled={loading}
                 className="date-select"
-                style={{ maxHeight: '200px' }}
               >
                 <option value="">月</option>
                 {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
@@ -376,7 +365,6 @@ const AddPatient: React.FC = () => {
                 required
                 disabled={loading}
                 className="date-select"
-                style={{ maxHeight: '200px' }}
               >
                 <option value="">日</option>
                 {Array.from({ length: getDaysInMonth(formData.birth_year, formData.birth_month) }, (_, i) => i + 1).map(day => (
@@ -385,9 +373,8 @@ const AddPatient: React.FC = () => {
                   </option>
                 ))}
               </select>
-          </div>
             </div>
-            
+          </div>
 
           <div className="form-group">
             <label htmlFor="gender">性別 *</label>
@@ -697,9 +684,9 @@ const AddPatient: React.FC = () => {
               キャンセル
             </button>
           </div>
-          </form>
+        </form>
       </div>
-    </div> 
+    </div>
   );
 };
 
