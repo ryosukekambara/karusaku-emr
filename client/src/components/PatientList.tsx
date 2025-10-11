@@ -32,57 +32,34 @@ const PatientList: React.FC = () => {
     try {
       setLoading(true);
       
-      // 拠点別データファイル名を取得
-      const dataFileName = config.getDataFile('customer_data');
-      console.log('Loading data from:', dataFileName, 'for clinic:', config.clinicId);
+      // 認証トークンを取得
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('ログインが必要です');
+        setLoading(false);
+        return;
+      }
       
-      // 将来的にAPIから読み込む場合の準備
-      // const response = await fetch(`/api/patients?clinic=${config.clinicId}`);
-      
-      const mockPatients = [
-        {
-          "id": 1,
-          "name": "田中太郎",
-          "kana": "タナカタロウ",
-          "date_of_birth": "1980-01-15",
-          "gender": "男性",
-          "phone": "090-1234-5678",
-          "email": "tanaka@example.com",
-          "address": "東京都渋谷区1-1-1",
-          "emergency_contact": "田中花子",
-          "emergency_phone": "090-8765-4321",
-          "insurance_type": "国民健康保険",
-          "insurance_card_number": "1234567890",
-          "insurance_holder": "田中太郎",
-          "primary_diagnosis": "腰痛",
-          "is_new_patient": true,
-          "created_at": "2024-08-29T10:00:00Z",
-          "updated_at": "2024-08-29T10:00:00Z"
-        },
-        {
-          "id": 2,
-          "name": "佐藤花子",
-          "kana": "サトウハナコ",
-          "date_of_birth": "1985-05-20",
-          "gender": "女性",
-          "phone": "080-9876-5432",
-          "email": "sato@example.com",
-          "address": "東京都新宿区2-2-2",
-          "emergency_contact": "佐藤次郎",
-          "emergency_phone": "080-1111-2222",
-          "insurance_type": "社会保険",
-          "insurance_card_number": "0987654321",
-          "insurance_holder": "佐藤花子",
-          "primary_diagnosis": "肩こり",
-          "is_new_patient": false,
-          "created_at": "2024-08-28T15:30:00Z",
-          "updated_at": "2024-08-29T09:15:00Z"
+      // バックエンドAPIから患者データを取得
+      const response = await fetch(`${config.apiBaseUrl}/api/patients`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
-      ];
-
-      setPatients(mockPatients);
+      });
+  
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log('Loaded patients from API:', data);
+      setPatients(data);
+      
     } catch (error) {
       console.error('顧客データの取得エラー:', error);
+      setError('顧客データの取得に失敗しました');
     } finally {
       setLoading(false);
     }
