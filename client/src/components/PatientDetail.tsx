@@ -110,34 +110,6 @@ const PatientDetail: React.FC = () => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!patient) return;
-    
-    if (!window.confirm(`${patient.name} を削除してもよろしいですか？\n\nこの操作は取り消せません。関連する施術記録も全て削除されます。`)) {
-      return;
-    }
-  
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${config.apiBaseUrl}/api/patients/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-  
-      if (response.ok) {
-        alert('患者を削除しました');
-        navigate('/patients');
-      } else {
-        alert('削除に失敗しました');
-      }
-    } catch (error) {
-      console.error('削除エラー:', error);
-      alert('削除に失敗しました');
-    }
-  };
-  
   if (loading) {
     return (
       <div className="container">
