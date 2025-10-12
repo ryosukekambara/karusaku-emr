@@ -72,9 +72,17 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (user?.username === 'demo') {
-      return;
-    }
+    // ページ遷移を検知するためのリスナー
+    const handleLocationChange = () => {
+      setSidebarOpen(false);
+    };
+  
+    window.addEventListener('popstate', handleLocationChange);
+    
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+    };
+  }, []);
 
     const checkSecurity = () => {
       if (user && !sessionManager.isSessionValid()) {
