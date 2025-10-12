@@ -218,23 +218,13 @@ function App() {
               backgroundColor: "rgba(0,0,0,0.5)",
               zIndex: 999
             }}
-            onClick={() => setSidebarOpen(false)}
-          />
-        )}
-        <div 
-          className="sidebar"
-          style={{
-            position: 'fixed',
-            left: '0',
-            top: '0',
-            width: '280px',
-            height: '100vh',
-            backgroundColor: 'white',
-            zIndex: 1000,
-            display: 'flex',
-            flexDirection: 'column',
-            boxShadow: '2px 0 10px rgba(0,0,0,0.1)'
-          }}
+            onClick={(e) => {
+              // デバッグ用ログ
+              console.log('リンクがクリックされました');
+              setTimeout(() => {
+                setSidebarOpen(false);
+              }, 100);
+            }}
           onMouseLeave={() => setSidebarOpen(false)}
         >
           <div className="sidebar-header">
@@ -242,7 +232,10 @@ function App() {
             <p>電子カルテシステム</p>
             <button 
               className="sidebar-close-btn"
-              onClick={() => setSidebarOpen(false)}
+              onClick={() => {
+                console.log('クリックされました！');
+                setTimeout(() => setSidebarOpen(false), 50);
+              }}
             >
               <X size={20} />
             </button>

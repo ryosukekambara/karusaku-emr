@@ -171,6 +171,10 @@ const PatientDetail: React.FC = () => {
         <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid #e5e7eb' }}>
         <button 
   onClick={handleDelete}
+  onTouchEnd={(e) => {
+    e.preventDefault();
+    handleDelete();
+  }}
   style={{ 
     backgroundColor: '#dc2626',
     color: 'white',
@@ -181,10 +185,9 @@ const PatientDetail: React.FC = () => {
     fontSize: '16px',
     fontWeight: '600',
     cursor: 'pointer',
+    WebkitTapHighlightColor: 'transparent',  // iOS用
     transition: 'background-color 0.2s'
   }}
-  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#b91c1c'}
-  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
 >
   この患者を削除
 </button>
