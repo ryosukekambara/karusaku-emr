@@ -169,17 +169,17 @@ const PatientDetail: React.FC = () => {
         </div>
 
         <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid #e5e7eb' }}>
-          <button 
-            onClick={handleDelete}
-            className="btn"
-            style={{ 
-              backgroundColor: '#ef4444', 
-              color: 'white',
-              width: '100%'
-            }}
-          >
-            🗑️ この患者を削除
-          </button>
+        <button 
+  onClick={handleDelete}
+  className="btn"
+  style={{ 
+    backgroundColor: '#dc2626',  // より濃い赤
+    color: 'white',
+    width: '100%'
+  }}
+>
+  この患者を削除
+</button>
         </div>
       </div>
     </div>
