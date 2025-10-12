@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import TreatmentRecord from './TreatmentRecord';
+import config from '../config';
 
 interface Patient {
   id: number;
@@ -81,6 +82,34 @@ const PatientDetail: React.FC = () => {
     return new Date(dateString).toLocaleDateString('ja-JP');
   };
 
+  const handleDelete = async () => {
+    if (!patient) return;
+    
+    if (!window.confirm(`${patient.name} を削除してもよろしいですか？\n\nこの操作は取り消せません。関連する施術記録も全て削除されます。`)) {
+      return;
+    }
+  
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${config.apiBaseUrl}/api/patients/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (response.ok) {
+        alert('患者を削除しました');
+        navigate('/patients');
+      } else {
+        alert('削除に失敗しました');
+      }
+    } catch (error) {
+      console.error('削除エラー:', error);
+      alert('削除に失敗しました');
+    }
+  };
+
   if (loading) {
     return (
       <div className="container">
@@ -96,7 +125,7 @@ const PatientDetail: React.FC = () => {
           {error || '顧客が見つかりません'}
         </div>
         <button onClick={() => navigate('/patients')} className="btn">
-                      顧客一覧に戻る
+          顧客一覧に戻る
         </button>
       </div>
     );
@@ -137,6 +166,20 @@ const PatientDetail: React.FC = () => {
             </div>
             <TreatmentRecord patientId={id} />
           </div>
+        </div>
+
+        <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid #e5e7eb' }}>
+          <button 
+            onClick={handleDelete}
+            className="btn"
+            style={{ 
+              backgroundColor: '#ef4444', 
+              color: 'white',
+              width: '100%'
+            }}
+          >
+            🗑️ この患者を削除
+          </button>
         </div>
       </div>
     </div>
