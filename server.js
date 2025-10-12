@@ -323,6 +323,37 @@ app.post('/api/patients/:id/records', authenticateToken, (req, res) => {
   );
 });
 
+// 患者削除
+app.delete('/api/patients/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // トランザクション開始：関連データも削除
+    await pool.query('BEGIN');
+
+    // 施術記録を削除
+    await pool.query('DELETE FROM medical_records WHERE patient_id = $1', [id]);
+
+    // 予約を削除
+    await pool.query('DELETE FROM appointments WHERE patient_id = $1', [id]);
+
+    // 患者を削除
+    const result = await pool.query('DELETE FROM patients WHERE id = $1 RETURNING *', [id]);
+
+    if (result.rows.length === 0) {
+      await pool.query('ROLLBACK');
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+
+    await pool.query('COMMIT');
+    res.json({ message: 'Patient deleted successfully', patient: result.rows[0] });
+  } catch (err) {
+    await pool.query('ROLLBACK');
+    console.error('患者削除エラー:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
 // 統計API
 app.get('/api/statistics/monthly', authenticateToken, (req, res) => {
   const year = req.query.year || new Date().getFullYear();
