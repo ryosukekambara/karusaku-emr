@@ -207,6 +207,7 @@ function App() {
 
     return (
       <>
+        {/* 背景のオーバーレイ */}
         {sidebarOpen && (
           <div 
             style={{
@@ -218,13 +219,25 @@ function App() {
               backgroundColor: "rgba(0,0,0,0.5)",
               zIndex: 999
             }}
-            onClick={(e) => {
-              // デバッグ用ログ
-              console.log('リンクがクリックされました');
-              setTimeout(() => {
-                setSidebarOpen(false);
-              }, 100);
-            }}
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+        
+        {/* サイドバー本体 */}
+        <div 
+          className="sidebar"
+          style={{
+            position: 'fixed',
+            left: '0',
+            top: '0',
+            width: '280px',
+            height: '100vh',
+            backgroundColor: 'white',
+            zIndex: 1000,
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '2px 0 10px rgba(0,0,0,0.1)'
+          }}
           onMouseLeave={() => setSidebarOpen(false)}
         >
           <div className="sidebar-header">
@@ -232,10 +245,7 @@ function App() {
             <p>電子カルテシステム</p>
             <button 
               className="sidebar-close-btn"
-              onClick={() => {
-                console.log('クリックされました！');
-                setTimeout(() => setSidebarOpen(false), 50);
-              }}
+              onClick={() => setSidebarOpen(false)}
             >
               <X size={20} />
             </button>
@@ -271,8 +281,10 @@ function App() {
                     key={index}
                     to={item.path}
                     className="sidebar-item"
-                    onClick={() => setSidebarOpen(false)}
-                    >
+                    onClick={() => {
+                      setTimeout(() => setSidebarOpen(false), 100);
+                    }}
+                  >
                     <span className="sidebar-icon">
                       {getIcon(item.icon)}
                     </span>
