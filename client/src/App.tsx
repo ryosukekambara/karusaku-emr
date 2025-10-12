@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
 import './App.css';
 import { API_ENDPOINTS } from './config/api';
 import { 
@@ -206,6 +206,7 @@ function App() {
   ];
 
   const Sidebar = ({ user }: { user: User }) => {
+    const navigate = useNavigate();  // ← この行を追加
     if (!sidebarOpen) {
       return null;
     }
@@ -282,23 +283,20 @@ function App() {
                 };
 
                 return (
-                  <Link
+                  <div
                     key={index}
-                    to={item.path}
                     className="sidebar-item"
-                    onClick={(e) => {
-                      console.log('メニューがクリックされました');
-                      // 少し遅延を入れて確実に実行
-                      setTimeout(() => {
-                        setSidebarOpen(false);
-                      }, 0);
+                    onClick={() => {
+                      window.location.href = item.path;  // ← navigateではなくこれを使う
+                      setSidebarOpen(false);
                     }}
+                    style={{ cursor: 'pointer' }}
                   >
                     <span className="sidebar-icon">
                       {getIcon(item.icon)}
                     </span>
                     <span className="sidebar-label">{item.label}</span>
-                  </Link>
+                  </div>
                 );
               })}
           </nav>
