@@ -84,6 +84,7 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
     const checkSecurity = () => {
       if (user && !sessionManager.isSessionValid()) {
         setSecurityAlert('セッションが期限切れです。再度ログインしてください。');
@@ -104,7 +105,7 @@ function App() {
 
     const securityInterval = setInterval(checkSecurity, 60000);
     return () => clearInterval(securityInterval);
-  }, [user]);
+  },　[user]);
 
   useEffect(() => {
     const initializeApp = () => {
