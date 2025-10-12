@@ -206,7 +206,6 @@ function App() {
   ];
 
   const Sidebar = ({ user }: { user: User }) => {
-    const navigate = useNavigate();  // ← この行を追加
     if (!sidebarOpen) {
       return null;
     }
