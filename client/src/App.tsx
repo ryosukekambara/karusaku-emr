@@ -283,11 +283,17 @@ function App() {
 
                 return (
                   <Link
-  key={index}
-  to={item.path}
-  className="sidebar-item"
-  onClick={() => setSidebarOpen(false)}
->
+                    key={index}
+                    to={item.path}
+                    className="sidebar-item"
+                    onClick={(e) => {
+                      console.log('メニューがクリックされました');
+                      // 少し遅延を入れて確実に実行
+                      setTimeout(() => {
+                        setSidebarOpen(false);
+                      }, 0);
+                    }}
+                  >
                     <span className="sidebar-icon">
                       {getIcon(item.icon)}
                     </span>
