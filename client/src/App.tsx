@@ -278,7 +278,8 @@ function App() {
                     key={index}
                     to={item.path}
                     className="sidebar-item"
-                  >
+                    onClick={() => setSidebarOpen(false)}
+                    >
                     <span className="sidebar-icon">
                       {getIcon(item.icon)}
                     </span>
