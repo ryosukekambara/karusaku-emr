@@ -72,17 +72,22 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    // ページ遷移を検知するためのリスナー
-    const handleLocationChange = () => {
-      setSidebarOpen(false);
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      // サイドバー内のクリックは無視
+      if (!target.closest('.sidebar') && !target.closest('.hamburger-menu')) {
+        setSidebarOpen(false);
+      }
     };
   
-    window.addEventListener('popstate', handleLocationChange);
+    if (sidebarOpen) {
+      document.addEventListener('click', handleClick);
+    }
     
     return () => {
-      window.removeEventListener('popstate', handleLocationChange);
+      document.removeEventListener('click', handleClick);
     };
-  }, []);
+  }, [sidebarOpen]);
 
   useEffect(() => {
     const checkSecurity = () => {
@@ -278,13 +283,11 @@ function App() {
 
                 return (
                   <Link
-                    key={index}
-                    to={item.path}
-                    className="sidebar-item"
-                    onClick={() => {
-                      setTimeout(() => setSidebarOpen(false), 100);
-                    }}
-                  >
+  key={index}
+  to={item.path}
+  className="sidebar-item"
+  onClick={() => setSidebarOpen(false)}
+>
                     <span className="sidebar-icon">
                       {getIcon(item.icon)}
                     </span>
