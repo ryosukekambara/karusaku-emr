@@ -153,7 +153,7 @@ const AddPatient: React.FC = () => {
   const fetchMaxId = async () => {
     try {
       const token = localStorage.getItem('token');
-      const API_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr.onrender.com';
+      const API_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr-backend.onrender.com';
       const response = await fetch(`${API_URL}/api/patients/max-id`, {
         headers: {
           'Authorization': `Bearer ${token}`
