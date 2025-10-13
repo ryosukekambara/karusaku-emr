@@ -108,19 +108,46 @@ app.get('/api/patients', authenticateToken, async (req, res) => {
   }
 });
 
+// 患者の最大ID取得
+app.get('/api/patients/max-id', authenticateToken, async (req, res) => {
+  try {
+    const [rows] = await pool.execute('SELECT MAX(id) as max_id FROM patients');
+    res.json({ maxId: rows[0].max_id || 0 });
+  } catch (error) {
+    console.error('Error getting max ID:', error);
+    res.status(500).json({ message: 'サーバーエラー' });
+  }
+});
+
 app.post('/api/patients', authenticateToken, async (req, res) => {
-  const { name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies } = req.body;
+  const { id, name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies } = req.body;
 
   try {
-    const [result] = await pool.execute(
-      `INSERT INTO patients (name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies]
-    );
-    res.json({ id: result.insertId, message: '患者が正常に登録されました' });
+    let result;
+    if (id) {
+      // ID指定あり
+      [result] = await pool.execute(
+        `INSERT INTO patients (id, name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies]
+      );
+      res.json({ id, message: '患者が正常に登録されました' });
+    } else {
+      // ID自動採番
+      [result] = await pool.execute(
+        `INSERT INTO patients (name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies]
+      );
+      res.json({ id: result.insertId, message: '患者が正常に登録されました' });
+    }
   } catch (error) {
-    console.error('Database error:', error);
-    res.status(500).json({ error: 'データベースエラー' });
+    if (error.code === 'ER_DUP_ENTRY') {
+      res.status(400).json({ error: 'そのIDは既に使用されています' });
+    } else {
+      console.error('Database error:', error);
+      res.status(500).json({ error: 'データベースエラー' });
+    }
   }
 });
 
