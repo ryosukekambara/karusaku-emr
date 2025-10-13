@@ -121,15 +121,26 @@ app.get('/api/patients/max-id', authenticateToken, async (req, res) => {
 });
 
 app.post('/api/patients', authenticateToken, async (req, res) => {
-  const { name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies } = req.body;
-
+  const { id, name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies } = req.body;
   try {
-    const [result] = await pool.execute(
-      `INSERT INTO patients (name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies]
-    );
-    res.json({ id: result.insertId, message: '患者が正常に登録されました' });
+    let result;
+    if (id) {
+      // ID指定あり
+      [result] = await pool.execute(
+        `INSERT INTO patients (id, name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies]
+      );
+      res.json({ id, message: '患者が正常に登録されました' });
+    } else {
+      // ID自動採番
+      [result] = await pool.execute(
+        `INSERT INTO patients (name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies]
+      );
+      res.json({ id: result.insertId, message: '患者が正常に登録されました' });
+    }
   } catch (error) {
     console.error('Database error:', error);
     res.status(500).json({ error: 'データベースエラー' });
