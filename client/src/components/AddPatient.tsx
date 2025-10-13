@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const AddPatient: React.FC = () => {
   const navigate = useNavigate();
+  const [customId, setCustomId] = useState('');
+  const [suggestedId, setSuggestedId] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     date_of_birth: '',
@@ -143,6 +145,29 @@ const AddPatient: React.FC = () => {
   const [filteredHolders, setFilteredHolders] = useState<string[]>([]);
   const [showHolderSuggestions, setShowHolderSuggestions] = useState(false);
 
+  // コンポーネントマウント時に最大IDを取得
+  useEffect(() => {
+    fetchMaxId();
+  }, []);
+
+  const fetchMaxId = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const API_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr.onrender.com';
+      const response = await fetch(`${API_URL}/api/patients/max-id`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSuggestedId(String((data.maxId || 0) + 1));
+      }
+    } catch (error) {
+      console.error('Failed to fetch max ID:', error);
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -269,14 +294,20 @@ const AddPatient: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const API_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr-backend.onrender.com';
-　　　 const response = await fetch(`${API_URL}/api/patients`, {
+      const API_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr.onrender.com';
+      
+      const patientData = {
+        ...formData,
+        id: customId || suggestedId  // カスタムIDまたは自動ID
+      };
+      
+      const response = await fetch(`${API_URL}/api/patients`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(patientData),
       });
 
       const data = await response.json();
@@ -309,8 +340,22 @@ const AddPatient: React.FC = () => {
         </div>
       )}
 
-      <div className="card">
+<div className="card">
         <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="customId">
+              患者ID（空欄の場合: {suggestedId || '自動採番'}）
+            </label>
+            <input
+              type="number"
+              id="customId"
+              value={customId}
+              onChange={(e) => setCustomId(e.target.value)}
+              placeholder={`自動: ${suggestedId || '...'}`}
+              disabled={loading}
+            />
+          </div>
+
           <div className="form-group">
             <label htmlFor="name">氏名 *</label>
             <input
