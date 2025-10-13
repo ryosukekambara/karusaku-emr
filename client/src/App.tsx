@@ -267,8 +267,8 @@ function App() {
                 <MenuItem
                   key={index}
                   onClick={() => {
-                    window.location.href = item.path;
-                    setSidebarOpen(false);
+                    // 強制的にページをリロード
+                    window.location.replace(item.path);
                   }}
                   style={{ cursor: 'pointer', padding: '15px 20px' }}
                 >
