@@ -109,6 +109,17 @@ app.get('/api/patients', authenticateToken, async (req, res) => {
   }
 });
 
+// 患者の最大ID取得
+app.get('/api/patients/max-id', authenticateToken, async (req, res) => {
+  try {
+    const [rows] = await pool.execute('SELECT MAX(id) as max_id FROM patients');
+    res.json({ maxId: rows[0].max_id || 0 });
+  } catch (error) {
+    console.error('Error getting max ID:', error);
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
 app.post('/api/patients', authenticateToken, async (req, res) => {
   const { name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies } = req.body;
 
