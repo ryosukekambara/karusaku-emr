@@ -16,7 +16,7 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 app.use(cors({
-  origin: true,
+  origin: ['https://karusaku-system.vercel.app', 'http://localhost:3000'],
   credentials: true
 }));
 app.use(morgan('combined'));
