@@ -1,6 +1,5 @@
 // API設定
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr.onrender.com';
-
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr-backend.onrender.com';
 export const apiConfig = {
   baseURL: API_BASE_URL,
   endpoints: {
