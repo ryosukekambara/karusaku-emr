@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
 import './App.css';
-import { API_ENDPOINTS } from './config/api';
+import { API_ENDPOINTS, apiConfig } from './config/api';
+const API_BASE_URL = apiConfig.baseURL;
 import { 
   BarChart3, 
   Users, 
@@ -136,7 +137,7 @@ function App() {
   const handleLogin = async (username: string, password: string) => {
     try {
 
-      const response = await fetch(API_ENDPOINTS.AUTH.LOGIN, {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
