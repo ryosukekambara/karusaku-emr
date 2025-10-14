@@ -67,7 +67,7 @@ app.post('/api/auth/login', async (req, res) => {
 
   try {
     const [rows] = await pool.execute(
-      'SELECT * FROM staff WHERE username = ?',
+      'SELECT * FROM users WHERE username = ?',
       [username]
     );
 
@@ -154,7 +154,7 @@ app.get('/api/medical-records', authenticateToken, async (req, res) => {
       SELECT mr.*, p.name as patient_name, s.name as staff_name
       FROM medical_records mr
       JOIN patients p ON mr.patient_id = p.id
-      JOIN staff s ON mr.staff_id = s.id
+      JOIN users s ON mr.staff_id = s.id
       ORDER BY mr.treatment_date DESC
     `);
     res.json(rows);
@@ -187,7 +187,7 @@ app.get('/api/appointments', authenticateToken, async (req, res) => {
       SELECT a.*, p.name as patient_name, s.name as staff_name
       FROM appointments a
       JOIN patients p ON a.patient_id = p.id
-      JOIN staff s ON a.staff_id = s.id
+      JOIN users s ON a.staff_id = s.id
       ORDER BY a.appointment_date ASC
     `);
     res.json(rows);
