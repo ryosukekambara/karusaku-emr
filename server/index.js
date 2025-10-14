@@ -214,6 +214,7 @@ app.post('/api/appointments', authenticateToken, async (req, res) => {
 });
 
 // ダッシュボード統計API
+// ダッシュボード統計API
 app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
   try {
     const stats = {};
@@ -241,16 +242,6 @@ app.get('/api/dashboard/stats', authenticateToken, async (req, res) => {
     console.error('Database error:', error);
     res.status(500).json({ error: 'データベースエラー' });
   }
-});
-
-// 静的ファイルの提供（フロントエンド）
-app.use('/static', express.static(path.join(__dirname, '../client/build/static')));
-app.use('/manifest.json', express.static(path.join(__dirname, '../client/build/manifest.json')));
-app.use('/favicon.ico', express.static(path.join(__dirname, '../client/build/favicon.ico')));
-
-// SPAフォールバック（すべての未定義ルートでindex.htmlを返す）
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
 // エラーハンドリング
