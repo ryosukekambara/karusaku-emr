@@ -1,26 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import { API_ENDPOINTS, apiConfig } from './config/api';
 import { 
-  BarChart3, 
-  Users, 
-  UserPlus, 
-  FileText, 
-  Calendar, 
-  Stethoscope, 
-  UserCheck, 
-  Receipt, 
-  UserCog, 
-  Calculator, 
-  MessageSquare, 
-  Bot, 
-  HardDrive, 
-  Workflow, 
-  TrendingUp, 
-  Settings,
   Menu,
-  X,
   LogOut
 } from 'lucide-react';
 import Login from './components/Login';
