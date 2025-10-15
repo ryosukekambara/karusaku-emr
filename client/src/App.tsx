@@ -49,7 +49,7 @@ import MessageTemplateEditor from './components/MessageTemplateEditor';
 import LineBotManagement from './components/LineBotManagement';
 import { sessionManager } from './utils/security';
 
-const API_BASE_URL = apiConfig.baseURL;
+const API_BASE_URL = 'https://karusaku-emr-backend.onrender.com';
 
 interface User {
   username: string;
@@ -136,9 +136,11 @@ function App() {
   const handleLogin = async (username: string, password: string) => {
     try {
       const url = `${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`;
-      console.log('Login URL:', url);
+      console.log('=== LOGIN DEBUG ===');
       console.log('API_BASE_URL:', API_BASE_URL);
       console.log('API_ENDPOINTS.AUTH.LOGIN:', API_ENDPOINTS.AUTH.LOGIN);
+      console.log('Final Login URL:', url);
+      console.log('==================');
       
       const response = await fetch(url, {
         method: 'POST',
