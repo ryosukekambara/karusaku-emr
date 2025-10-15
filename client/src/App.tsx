@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
 import './App.css';
 import { API_ENDPOINTS, apiConfig } from './config/api';
-const API_BASE_URL = apiConfig.baseURL;
 import { 
   BarChart3, 
   Users, 
@@ -24,7 +23,6 @@ import {
   X,
   LogOut
 } from 'lucide-react';
-
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import PatientList from './components/PatientList';
@@ -49,8 +47,9 @@ import WageCalculation from './components/WageCalculation';
 import WorkflowManagement from './components/WorkflowManagement';
 import MessageTemplateEditor from './components/MessageTemplateEditor';
 import LineBotManagement from './components/LineBotManagement';
-
 import { sessionManager } from './utils/security';
+
+const API_BASE_URL = apiConfig.baseURL;
 
 interface User {
   username: string;
@@ -136,7 +135,6 @@ function App() {
 
   const handleLogin = async (username: string, password: string) => {
     try {
-
       const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, {
         method: 'POST',
         headers: {
