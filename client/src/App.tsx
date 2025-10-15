@@ -118,7 +118,12 @@ function App() {
 
   const handleLogin = async (username: string, password: string) => {
     try {
-      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, {
+      const url = `${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`;
+      console.log('Login URL:', url);
+      console.log('API_BASE_URL:', API_BASE_URL);
+      console.log('API_ENDPOINTS.AUTH.LOGIN:', API_ENDPOINTS.AUTH.LOGIN);
+      
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -126,8 +131,12 @@ function App() {
         body: JSON.stringify({ username, password }),
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+
       if (response.ok) {
         const data = await response.json();
+        console.log('Login success:', data);
         const userData: User = {
           username: data.user.username,
           name: data.user.name,
@@ -142,11 +151,13 @@ function App() {
         return true;
       } else {
         const errorData = await response.json();
+        console.error('Login error response:', errorData);
         setSecurityAlert(errorData.error || 'ログインに失敗しました');
         return false;
       }
     } catch (error) {
-      setSecurityAlert('サーバーに接続できません。ネットワークを確認してください。');
+      console.error('Login catch error:', error);
+      setSecurityAlert(`サーバーに接続できません。エラー: ${error.message}`);
       return false;
     }
   };
