@@ -157,7 +157,8 @@ function App() {
       }
     } catch (error) {
       console.error('Login catch error:', error);
-      setSecurityAlert(`サーバーに接続できません。エラー: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setSecurityAlert(`サーバーに接続できません。エラー: ${errorMessage}`);
       return false;
     }
   };
