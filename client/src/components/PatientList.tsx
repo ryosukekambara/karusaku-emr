@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Download, Upload } from 'lucide-react';
-import { apiConfig } from '../config/api';
+import config from '../config';
 
 interface Patient {
   id: number;
@@ -26,7 +26,7 @@ const PatientList: React.FC = () => {
 
   useEffect(() => {
     fetchPatients();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const fetchPatients = useCallback(async () => {
     try {
@@ -41,7 +41,7 @@ const PatientList: React.FC = () => {
       }
       
       // バックエンドAPIから患者データを取得
-      const response = await fetch(`${apiConfig.baseURL}/api/patients`, {
+      const response = await fetch(`${config.apiBaseUrl}/api/patients`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -120,7 +120,7 @@ const PatientList: React.FC = () => {
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    link.setAttribute('download', `顧客一覧_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `顧客一覧_${config.clinicId}_${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
@@ -134,7 +134,7 @@ const PatientList: React.FC = () => {
     try {
       const text = await file.text();
       const lines = text.split('\n');
-      // const headers = lines[0].split(',').map(h => h.replace(/"/g, ''));
+      const headers = lines[0].split(',').map(h => h.replace(/"/g, ''));
       
       const patients = lines.slice(1).filter(line => line.trim()).map(line => {
         const values = line.split(',').map(v => v.replace(/"/g, ''));
@@ -148,13 +148,13 @@ const PatientList: React.FC = () => {
       });
 
       const token = localStorage.getItem('token');
-      const response = await fetch(`${apiConfig.baseURL}/api/patients/import-csv`, {
+      const response = await fetch('/api/patients/import-csv', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ patients }),
+        body: JSON.stringify({ patients, clinicId: config.clinicId }),
       });
 
       if (response.ok) {
@@ -178,7 +178,7 @@ const PatientList: React.FC = () => {
   return (
     <div className="container">
       <div className="page-header">
-      <h1>顧客管理</h1>
+      <h1>顧客管理 - {config.clinicName}</h1>
         <Link to="/patients/add" className="btn btn-primary">
           + 新規顧客登録
         </Link>
