@@ -142,6 +142,9 @@ function App() {
       console.log('Final Login URL:', url);
       console.log('==================');
       
+      // 強制的にアラートでURLを表示
+      alert(`Login URL: ${url}`);
+      
       const response = await fetch(url, {
         method: 'POST',
         headers: {
