@@ -26,7 +26,7 @@ const PatientList: React.FC = () => {
 
   useEffect(() => {
     fetchPatients();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchPatients = useCallback(async () => {
     try {
@@ -134,7 +134,7 @@ const PatientList: React.FC = () => {
     try {
       const text = await file.text();
       const lines = text.split('\n');
-      const headers = lines[0].split(',').map(h => h.replace(/"/g, ''));
+      // const headers = lines[0].split(',').map(h => h.replace(/"/g, ''));
       
       const patients = lines.slice(1).filter(line => line.trim()).map(line => {
         const values = line.split(',').map(v => v.replace(/"/g, ''));
