@@ -50,6 +50,7 @@ import LineBotManagement from './components/LineBotManagement';
 import { sessionManager } from './utils/security';
 
 const API_BASE_URL = 'https://karusaku-emr-backend.onrender.com';
+const LOGIN_URL = 'https://karusaku-emr-backend.onrender.com/api/auth/login';
 
 interface User {
   username: string;
@@ -135,17 +136,14 @@ function App() {
 
   const handleLogin = async (username: string, password: string) => {
     try {
-      const url = `${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`;
       console.log('=== LOGIN DEBUG ===');
-      console.log('API_BASE_URL:', API_BASE_URL);
-      console.log('API_ENDPOINTS.AUTH.LOGIN:', API_ENDPOINTS.AUTH.LOGIN);
-      console.log('Final Login URL:', url);
+      console.log('Using direct LOGIN_URL:', LOGIN_URL);
       console.log('==================');
       
       // 強制的にアラートでURLを表示
-      alert(`Login URL: ${url}`);
+      alert(`Login URL: ${LOGIN_URL}`);
       
-      const response = await fetch(url, {
+      const response = await fetch(LOGIN_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
