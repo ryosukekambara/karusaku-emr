@@ -1,5 +1,6 @@
 // API設定
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr-backend.onrender.com';
+const API_BASE_URL = 'https://karusaku-emr-backend.onrender.com';
+
 export const apiConfig = {
   baseURL: API_BASE_URL,
   endpoints: {
@@ -16,7 +17,6 @@ export const apiConfig = {
   },
 };
 
-// 後方互換性のためのエクスポート
 export const API_ENDPOINTS = {
   HEALTH: '/api/health',
   AUTH: {
@@ -30,7 +30,6 @@ export const API_ENDPOINTS = {
   },
 };
 
-// 認証ヘッダーを取得する関数
 export const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
   return {
