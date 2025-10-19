@@ -1,28 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import { API_ENDPOINTS, apiConfig } from './config/api';
-import { 
-  BarChart3, 
-  Users, 
-  UserPlus, 
-  FileText, 
-  Calendar, 
-  Stethoscope, 
-  UserCheck, 
-  Receipt, 
-  UserCog, 
-  Calculator, 
-  MessageSquare, 
-  Bot, 
-  HardDrive, 
-  Workflow, 
-  TrendingUp, 
-  Settings,
-  Menu,
-  X,
-  LogOut
-} from 'lucide-react';
+import { Menu, LogOut } from 'lucide-react';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import PatientList from './components/PatientList';
@@ -49,7 +29,6 @@ import MessageTemplateEditor from './components/MessageTemplateEditor';
 import LineBotManagement from './components/LineBotManagement';
 import { sessionManager } from './utils/security';
 
-// 元の動作していたコードに戻す
 const API_BASE_URL = apiConfig.baseURL;
 
 interface User {
@@ -73,20 +52,17 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      // サイドバー内のクリックは無視
-      if (!target.closest('.sidebar') && !target.closest('.hamburger-menu')) {
+      if (sidebarOpen && !target.closest('.sidebar') && !target.closest('.hamburger-menu')) {
         setSidebarOpen(false);
       }
     };
   
-    if (sidebarOpen) {
-      document.addEventListener('click', handleClick);
-    }
+    document.addEventListener('mousedown', handleClickOutside);
     
     return () => {
-      document.removeEventListener('click', handleClick);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [sidebarOpen]);
 
@@ -136,8 +112,7 @@ function App() {
 
   const handleLogin = async (username: string, password: string) => {
     try {
-      // 元の動作していたコードに戻す
-      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, {
+      const response = await fetch(\`\${API_BASE_URL}\${API_ENDPOINTS.AUTH.LOGIN}\`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -145,12 +120,8 @@ function App() {
         body: JSON.stringify({ username, password }),
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
-
       if (response.ok) {
         const data = await response.json();
-        console.log('Login success:', data);
         const userData: User = {
           username: data.user.username,
           name: data.user.name,
@@ -165,14 +136,12 @@ function App() {
         return true;
       } else {
         const errorData = await response.json();
-        console.error('Login error response:', errorData);
         setSecurityAlert(errorData.error || 'ログインに失敗しました');
         return false;
       }
     } catch (error) {
-      console.error('Login catch error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      setSecurityAlert(`サーバーに接続できません。エラー: ${errorMessage}`);
+      setSecurityAlert(\`サーバーに接続できません。エラー: \${errorMessage}\`);
       return false;
     }
   };
@@ -222,6 +191,7 @@ function App() {
       <>
         {sidebarOpen && (
           <div 
+            className="sidebar-overlay"
             style={{
               position: "fixed",
               top: 0,
@@ -231,11 +201,11 @@ function App() {
               backgroundColor: "rgba(0,0,0,0.5)",
               zIndex: 999
             }}
-            onClick={() => setSidebarOpen(false)}
           />
         )}
         
         <ProSidebar
+          className="sidebar"
           toggled={sidebarOpen}
           onToggle={setSidebarOpen}
           breakPoint="md"
@@ -303,7 +273,8 @@ function App() {
                 color: 'white',
                 border: 'none',
                 borderRadius: '5px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                width: '100%'
               }}
             >
               ログアウト
@@ -315,22 +286,9 @@ function App() {
   };
 
   const MainLayout = ({ children }: { children: React.ReactNode }) => {
-    const mainContentStyle = {
-      marginLeft: '0',
-      marginTop: '60px',
-      transition: 'none',
-      minHeight: 'calc(100vh - 60px)',
-      padding: '20px',
-      backgroundColor: '#f5f5f5',
-      width: '100%',
-      maxWidth: 'none',
-      position: 'relative' as const,
-      zIndex: 1
-    };
-
     return (
       <div className="app-layout">
-        <div className="app-header">
+        <div className="app-header" style={{ zIndex: 1001 }}>
           <button 
             className="hamburger-menu"
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -346,11 +304,17 @@ function App() {
           </div>
         </div>
         
-        {user && (
-          <Sidebar user={user} />
-        )}
+        {user && <Sidebar user={user} />}
         
-        <main style={mainContentStyle}>
+        <main style={{
+          marginLeft: '0',
+          marginTop: '60px',
+          minHeight: 'calc(100vh - 60px)',
+          padding: '20px',
+          backgroundColor: '#f5f5f5',
+          position: 'relative',
+          zIndex: 1
+        }}>
           {securityAlert && (
             <div className="security-alert">
               <span>{securityAlert}</span>
@@ -371,26 +335,8 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route
-            path="/login"
-            element={
-              user ? (
-                <Navigate to="/dashboard" replace />
-              ) : (
-                <Login onLogin={handleLogin} securityAlert={securityAlert} />
-              )
-            }
-          />
-          <Route
-            path="/"
-            element={
-              user ? (
-                <Navigate to="/dashboard" replace />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
+          <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <Login onLogin={handleLogin} securityAlert={securityAlert} />} />
+          <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />} />
           {user && (
             <>
               <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
