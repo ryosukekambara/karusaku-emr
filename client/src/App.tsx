@@ -262,6 +262,8 @@ function App() {
           </div>
           
           <div style={{
+            className="sidebar-logout-area"
+            style={{
             position: 'absolute',
             bottom: 0,
             left: 0,
