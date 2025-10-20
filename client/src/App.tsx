@@ -217,6 +217,9 @@ function App() {
             height: '100vh',
             zIndex: 1000,
             display: sidebarOpen ? 'block' : 'none'
+,
+            overflowY: 'auto',
+            paddingBottom: '120px'
           }}
         >
           <div style={{ padding: '20px', borderBottom: '1px solid #eee' }}>
@@ -239,7 +242,6 @@ function App() {
           </div>
           
           <Menu>
-          <div style={{ height: "calc(100vh - 250px)", overflowY: "auto" }}>
             {sidebarItems
               .filter(item => item.role === 'all' || item.role === user.role)
               .map((item, index) => (
@@ -254,7 +256,6 @@ function App() {
                   {item.label}
                 </MenuItem>
               ))}
-          </div>
           </Menu>
           
           <div style={{
