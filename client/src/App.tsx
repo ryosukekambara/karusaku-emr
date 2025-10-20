@@ -217,7 +217,6 @@ function App() {
             height: '100vh',
             zIndex: 1000,
             display: sidebarOpen ? 'block' : 'none'
-,
             overflowY: 'auto',
             paddingBottom: '120px'
           }}
