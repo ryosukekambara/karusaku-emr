@@ -112,7 +112,7 @@ function App() {
 
   const handleLogin = async (username: string, password: string) => {
     try {
-      const response = await fetch(\`\${API_BASE_URL}\${API_ENDPOINTS.AUTH.LOGIN}\`, {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ function App() {
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      setSecurityAlert(\`サーバーに接続できません。エラー: \${errorMessage}\`);
+      setSecurityAlert(`サーバーに接続できません。エラー: ${errorMessage}`);
       return false;
     }
   };
@@ -217,8 +217,6 @@ function App() {
             height: '100vh',
             zIndex: 1000,
             display: sidebarOpen ? 'block' : 'none'
-            overflowY: 'auto',
-            paddingBottom: '120px'
           }}
         >
           <div style={{ padding: '20px', borderBottom: '1px solid #eee' }}>
@@ -255,33 +253,28 @@ function App() {
                   {item.label}
                 </MenuItem>
               ))}
+            
+            <div style={{ borderTop: '1px solid #eee', padding: '20px' }}>
+              <div style={{ marginBottom: '10px' }}>{user.name}</div>
+              <div style={{ marginBottom: '15px', color: '#666' }}>
+                {user.role === 'master' ? 'マスター' : 'スタッフ'}
+              </div>
+              <button 
+                onClick={handleLogout}
+                style={{
+                  padding: '10px 20px',
+                  background: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  width: '100%'
+                }}
+              >
+                ログアウト
+              </button>
+            </div>
           </Menu>
-          
-          <div style={{
-            position: 'absolute',
-            bottom: 0,
-            width: '100%',
-            padding: '20px',
-            borderTop: '1px solid #eee'
-          }}>
-            <div>{user.name}</div>
-            <div>{user.role === 'master' ? 'マスター' : 'スタッフ'}</div>
-            <button 
-              onClick={handleLogout}
-              style={{
-                marginTop: '10px',
-                padding: '10px 20px',
-                background: '#dc3545',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                width: '100%'
-              }}
-            >
-              ログアウト
-            </button>
-          </div>
         </ProSidebar>
       </>
     );
