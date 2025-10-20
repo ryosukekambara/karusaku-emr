@@ -238,43 +238,58 @@ function App() {
             </button>
           </div>
           
-          <Menu>
-            {sidebarItems
-              .filter(item => item.role === 'all' || item.role === user.role)
-              .map((item, index) => (
-                <MenuItem
-                  key={index}
-                  onClick={() => {
-                    window.location.href = item.path;
-                    setSidebarOpen(false);
-                  }}
-                  style={{ cursor: 'pointer', padding: '15px 20px' }}
-                >
-                  {item.label}
-                </MenuItem>
-              ))}
-            
-            <div style={{ borderTop: '1px solid #eee', padding: '20px' }}>
-              <div style={{ marginBottom: '10px' }}>{user.name}</div>
-              <div style={{ marginBottom: '15px', color: '#666' }}>
-                {user.role === 'master' ? 'マスター' : 'スタッフ'}
-              </div>
-              <button 
-                onClick={handleLogout}
-                style={{
-                  padding: '10px 20px',
-                  background: '#dc3545',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  width: '100%'
-                }}
-              >
-                ログアウト
-              </button>
+          <div style={{ 
+            height: 'calc(100vh - 180px)', 
+            overflowY: 'auto',
+            overflowX: 'hidden'
+          }}>
+            <Menu>
+              {sidebarItems
+                .filter(item => item.role === 'all' || item.role === user.role)
+                .map((item, index) => (
+                  <MenuItem
+                    key={index}
+                    onClick={() => {
+                      window.location.href = item.path;
+                      setSidebarOpen(false);
+                    }}
+                    style={{ cursor: 'pointer', padding: '15px 20px' }}
+                  >
+                    {item.label}
+                  </MenuItem>
+                ))}
+            </Menu>
+          </div>
+          
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding: '20px',
+            borderTop: '1px solid #eee',
+            backgroundColor: '#fff'
+          }}>
+            <div style={{ marginBottom: '5px', fontSize: '14px' }}>{user.name}</div>
+            <div style={{ marginBottom: '10px', fontSize: '12px', color: '#666' }}>
+              {user.role === 'master' ? 'マスター' : 'スタッフ'}
             </div>
-          </Menu>
+            <button 
+              onClick={handleLogout}
+              style={{
+                padding: '10px 20px',
+                background: '#dc3545',
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+                width: '100%',
+                fontSize: '14px'
+              }}
+            >
+              ログアウト
+            </button>
+          </div>
         </ProSidebar>
       </>
     );
