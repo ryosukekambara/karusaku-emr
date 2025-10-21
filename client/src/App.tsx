@@ -261,7 +261,7 @@ function App() {
             </Menu>
           </div>
           
-          <div style={{
+          <div 
             className="sidebar-logout-area"
             style={{
             position: 'absolute',
