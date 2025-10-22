@@ -207,7 +207,7 @@ function App() {
         <ProSidebar
           className="sidebar"
           toggled={sidebarOpen}
-          onToggle={setSidebarOpen}
+          onBackdropClick={() => setSidebarOpen(false)}
           breakPoint="md"
           backgroundColor="#fff"
           style={{
