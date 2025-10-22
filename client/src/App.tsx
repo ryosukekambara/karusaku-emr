@@ -190,8 +190,9 @@ function App() {
     return (
       <>
         {sidebarOpen && (
-          <div 
+          <div
             className="sidebar-overlay"
+            onClick={() => setSidebarOpen(false)}
             style={{
               position: "fixed",
               top: 0,
@@ -199,7 +200,8 @@ function App() {
               right: 0,
               bottom: 0,
               backgroundColor: "rgba(0,0,0,0.5)",
-              zIndex: 999
+              zIndex: 999,
+              cursor: "pointer"
             }}
           />
         )}
