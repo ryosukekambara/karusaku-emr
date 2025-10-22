@@ -226,7 +226,7 @@ function App() {
             flex: 1,
             overflowY: 'auto',
             overflowX: 'hidden',
-            paddingBottom: '100px'
+            paddingBottom: '140px'
           }}>
             {sidebarItems
               .filter(item => item.role === 'all' || item.role === user.role)
