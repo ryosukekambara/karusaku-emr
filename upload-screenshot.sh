@@ -6,8 +6,38 @@ SCREENSHOTS_DIR="$SCRIPT_DIR/screenshots"
 
 echo "📸 スクリーンショットアップローダー"
 echo ""
-echo "デスクトップのスクリーンショットを探しています..."
+
+# 引数でパスが指定された場合
+if [ -n "$1" ]; then
+    if [ -f "$1" ]; then
+        FILENAME=$(basename "$1")
+        cp "$1" "$SCREENSHOTS_DIR/$FILENAME"
+        echo "✅ アップロード成功！"
+        echo ""
+        echo "ファイル: $FILENAME"
+        echo "保存先: screenshots/$FILENAME"
+        echo ""
+        echo "📝 Claudeに次のように伝えてください："
+        echo "   「screenshots/$FILENAME を見て」"
+        exit 0
+    else
+        echo "❌ ファイルが見つかりません: $1"
+        exit 1
+    fi
+fi
+
+echo "【使い方】"
 echo ""
+echo "方法1: ドラッグ&ドロップ"
+echo "  ターミナルに「./upload-screenshot.sh 」と入力して、"
+echo "  スクリーンショットをドラッグ&ドロップしてEnter"
+echo ""
+echo "方法2: 直接指定"
+echo "  ./upload-screenshot.sh ~/Desktop/スクリーンショット....png"
+echo ""
+echo "方法3: 最新のスクリーンショットを自動検索"
+echo "  そのままEnterを押してください..."
+read -p ""
 
 # 複数の場所を探す
 DESKTOP_PATHS=(
@@ -29,14 +59,6 @@ done
 
 if [ -z "$LATEST_SCREENSHOT" ]; then
     echo "❌ スクリーンショットが見つかりません"
-    echo ""
-    echo "【使い方】"
-    echo "1. スクリーンショットを撮る（Command + Shift + 4）"
-    echo "2. ターミナルで実行: cd ~/Projects/myapp && ./upload-screenshot.sh"
-    echo ""
-    echo "【手動でアップロード】"
-    echo "スクリーンショットのフルパスを指定："
-    echo "./upload-screenshot.sh /path/to/screenshot.png"
     exit 1
 fi
 
