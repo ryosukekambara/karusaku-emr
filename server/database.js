@@ -33,8 +33,6 @@ pool.execute = function(query, params = []) {
 async function initializeDatabase() {
   try {
     // 古いテーブルを削除
-    await pool.query('DROP TABLE IF EXISTS users CASCADE');
-    await pool.query('DROP TABLE IF EXISTS patients CASCADE');
     
     // usersテーブル
     await pool.query(`
