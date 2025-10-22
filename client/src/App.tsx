@@ -215,8 +215,7 @@ function App() {
             top: 0,
             left: 0,
             height: '100vh',
-            zIndex: 1000,
-            display: sidebarOpen ? 'block' : 'none'
+            zIndex: 1000
           }}
         >
           <div style={{ padding: '20px', borderBottom: '1px solid #eee' }}>
