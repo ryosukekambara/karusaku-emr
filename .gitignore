@@ -37,3 +37,8 @@ coverage/
 .DS_Store
 Thumbs.db
 .vercel
+
+# Screenshots (ignore images but not the folder)
+screenshots/*.png
+screenshots/*.jpg
+screenshots/*.jpeg
