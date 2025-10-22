@@ -52,21 +52,6 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (sidebarOpen && !target.closest('.sidebar') && !target.closest('.hamburger-menu')) {
-        setSidebarOpen(false);
-      }
-    };
-  
-    document.addEventListener('mousedown', handleClickOutside);
-    
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [sidebarOpen]);
-
-  useEffect(() => {
     const checkSecurity = () => {
       if (user && !sessionManager.isSessionValid()) {
         setSecurityAlert('セッションが期限切れです。再度ログインしてください。');
@@ -183,39 +168,39 @@ function App() {
   ];
 
   const Sidebar = ({ user }: { user: User }) => {
-    const ProSidebar = require('react-pro-sidebar').Sidebar;
-    const Menu = require('react-pro-sidebar').Menu;
-    const MenuItem = require('react-pro-sidebar').MenuItem;
+    if (!sidebarOpen) return null;
 
     return (
       <>
-        {sidebarOpen && (
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              zIndex: 1000
-            }}
-            onClick={() => setSidebarOpen(false)}
-          />
-        )}
+        {/* Overlay */}
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            zIndex: 999
+          }}
+          onClick={() => setSidebarOpen(false)}
+        />
 
-        <ProSidebar
+        {/* Sidebar */}
+        <div
           className="sidebar"
-          toggled={sidebarOpen}
-          onBackdropClick={() => setSidebarOpen(false)}
-          breakPoint="md"
-          backgroundColor="#fff"
           style={{
             position: 'fixed',
             top: 0,
             left: 0,
+            width: '280px',
             height: '100vh',
-            zIndex: 1001
+            backgroundColor: '#fff',
+            zIndex: 1000,
+            boxShadow: '2px 0 8px rgba(0,0,0,0.15)',
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: 'auto'
           }}
         >
           <div style={{ padding: '20px', borderBottom: '1px solid #eee' }}>
@@ -237,27 +222,33 @@ function App() {
             </button>
           </div>
           
-          <div style={{ 
-            height: 'calc(100vh - 180px)', 
+          <div style={{
+            flex: 1,
             overflowY: 'auto',
-            overflowX: 'hidden'
+            overflowX: 'hidden',
+            paddingBottom: '100px'
           }}>
-            <Menu>
-              {sidebarItems
-                .filter(item => item.role === 'all' || item.role === user.role)
-                .map((item, index) => (
-                  <MenuItem
-                    key={index}
-                    onClick={() => {
-                      window.location.href = item.path;
-                      setSidebarOpen(false);
-                    }}
-                    style={{ cursor: 'pointer', padding: '15px 20px' }}
-                  >
-                    {item.label}
-                  </MenuItem>
-                ))}
-            </Menu>
+            {sidebarItems
+              .filter(item => item.role === 'all' || item.role === user.role)
+              .map((item, index) => (
+                <div
+                  key={index}
+                  onClick={() => {
+                    window.location.href = item.path;
+                    setSidebarOpen(false);
+                  }}
+                  style={{
+                    cursor: 'pointer',
+                    padding: '15px 20px',
+                    borderBottom: '1px solid #f0f0f0',
+                    transition: 'background-color 0.2s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                  {item.label}
+                </div>
+              ))}
           </div>
           
           <div 
@@ -291,7 +282,7 @@ function App() {
               ログアウト
             </button>
           </div>
-        </ProSidebar>
+        </div>
       </>
     );
   };
