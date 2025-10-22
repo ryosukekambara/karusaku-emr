@@ -186,13 +186,11 @@ function App() {
     const ProSidebar = require('react-pro-sidebar').Sidebar;
     const Menu = require('react-pro-sidebar').Menu;
     const MenuItem = require('react-pro-sidebar').MenuItem;
-    
+
     return (
       <>
         {sidebarOpen && (
           <div
-            className="sidebar-overlay"
-            onClick={() => setSidebarOpen(false)}
             style={{
               position: "fixed",
               top: 0,
@@ -200,12 +198,12 @@ function App() {
               right: 0,
               bottom: 0,
               backgroundColor: "rgba(0,0,0,0.5)",
-              zIndex: 999,
-              cursor: "pointer"
+              zIndex: 1000
             }}
+            onClick={() => setSidebarOpen(false)}
           />
         )}
-        
+
         <ProSidebar
           className="sidebar"
           toggled={sidebarOpen}
@@ -217,7 +215,7 @@ function App() {
             top: 0,
             left: 0,
             height: '100vh',
-            zIndex: 1000
+            zIndex: 1001
           }}
         >
           <div style={{ padding: '20px', borderBottom: '1px solid #eee' }}>
