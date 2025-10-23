@@ -1,29 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-import { API_ENDPOINTS } from './config/api';
-import { 
-  BarChart3, 
-  Users, 
-  UserPlus, 
-  FileText, 
-  Calendar, 
-  Stethoscope, 
-  UserCheck, 
-  Receipt, 
-  UserCog, 
-  Calculator, 
-  MessageSquare, 
-  Bot, 
-  HardDrive, 
-  Workflow, 
-  TrendingUp, 
-  Settings,
-  Menu,
-  X,
-  LogOut
-} from 'lucide-react';
-
+import { API_ENDPOINTS, apiConfig } from './config/api';
+import { Menu, LogOut } from 'lucide-react';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import PatientList from './components/PatientList';
@@ -48,8 +27,9 @@ import WageCalculation from './components/WageCalculation';
 import WorkflowManagement from './components/WorkflowManagement';
 import MessageTemplateEditor from './components/MessageTemplateEditor';
 import LineBotManagement from './components/LineBotManagement';
-
 import { sessionManager } from './utils/security';
+
+const API_BASE_URL = apiConfig.baseURL;
 
 interface User {
   username: string;
@@ -72,20 +52,17 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      // サイドバー内のクリックは無視
-      if (!target.closest('.sidebar') && !target.closest('.hamburger-menu')) {
+      if (sidebarOpen && !target.closest('.sidebar') && !target.closest('.hamburger-menu')) {
         setSidebarOpen(false);
       }
     };
   
-    if (sidebarOpen) {
-      document.addEventListener('click', handleClick);
-    }
+    document.addEventListener('mousedown', handleClickOutside);
     
     return () => {
-      document.removeEventListener('click', handleClick);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [sidebarOpen]);
 
@@ -135,8 +112,7 @@ function App() {
 
   const handleLogin = async (username: string, password: string) => {
     try {
-
-      const response = await fetch(API_ENDPOINTS.AUTH.LOGIN, {
+      const response = await fetch(\`\${API_BASE_URL}\${API_ENDPOINTS.AUTH.LOGIN}\`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -164,7 +140,8 @@ function App() {
         return false;
       }
     } catch (error) {
-      setSecurityAlert('サーバーに接続できません。ネットワークを確認してください。');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setSecurityAlert(\`サーバーに接続できません。エラー: \${errorMessage}\`);
       return false;
     }
   };
@@ -206,12 +183,15 @@ function App() {
   ];
 
   const Sidebar = ({ user }: { user: User }) => {
-
+    const ProSidebar = require('react-pro-sidebar').Sidebar;
+    const Menu = require('react-pro-sidebar').Menu;
+    const MenuItem = require('react-pro-sidebar').MenuItem;
+    
     return (
       <>
-        {/* 背景のオーバーレイ */}
         {sidebarOpen && (
           <div 
+            className="sidebar-overlay"
             style={{
               position: "fixed",
               top: 0,
@@ -221,112 +201,96 @@ function App() {
               backgroundColor: "rgba(0,0,0,0.5)",
               zIndex: 999
             }}
-            onClick={() => setSidebarOpen(false)}
           />
         )}
         
-        {/* サイドバー本体 */}
-        <div 
-  className={sidebarOpen ? "sidebar sidebar-open" : "sidebar sidebar-closed"}
+        <ProSidebar
+          className="sidebar"
+          toggled={sidebarOpen}
+          onToggle={setSidebarOpen}
+          breakPoint="md"
+          backgroundColor="#fff"
           style={{
             position: 'fixed',
-            left: '0',
-            top: '0',
-            width: '280px',
+            top: 0,
+            left: 0,
             height: '100vh',
-            backgroundColor: 'white',
             zIndex: 1000,
-            display: 'flex',
-            flexDirection: 'column',
-            boxShadow: '2px 0 10px rgba(0,0,0,0.1)'
+            display: sidebarOpen ? 'block' : 'none'
+            overflowY: 'auto',
+            paddingBottom: '120px'
           }}
-          onMouseLeave={() => setSidebarOpen(false)}
         >
-          <div className="sidebar-header">
+          <div style={{ padding: '20px', borderBottom: '1px solid #eee' }}>
             <h2>カルサク</h2>
             <p>電子カルテシステム</p>
             <button 
-              className="sidebar-close-btn"
               onClick={() => setSidebarOpen(false)}
+              style={{
+                position: 'absolute',
+                top: '20px',
+                right: '20px',
+                background: 'none',
+                border: 'none',
+                fontSize: '20px',
+                cursor: 'pointer'
+              }}
             >
-              <X size={20} />
+              ✕
             </button>
           </div>
-          <nav className="sidebar-nav">
+          
+          <Menu>
             {sidebarItems
               .filter(item => item.role === 'all' || item.role === user.role)
-              .map((item, index) => {
-                const getIcon = (iconName: string) => {
-                  switch (iconName) {
-                    case 'BarChart3': return <BarChart3 size={20} />;
-                    case 'Users': return <Users size={20} />;
-                    case 'UserPlus': return <UserPlus size={20} />;
-                    case 'FileText': return <FileText size={20} />;
-                    case 'Calendar': return <Calendar size={20} />;
-                    case 'Stethoscope': return <Stethoscope size={20} />;
-                    case 'UserCheck': return <UserCheck size={20} />;
-                    case 'Receipt': return <Receipt size={20} />;
-                    case 'UserCog': return <UserCog size={20} />;
-                    case 'Calculator': return <Calculator size={20} />;
-                    case 'MessageSquare': return <MessageSquare size={20} />;
-                    case 'Bot': return <Bot size={20} />;
-                    case 'HardDrive': return <HardDrive size={20} />;
-                    case 'Workflow': return <Workflow size={20} />;
-                    case 'TrendingUp': return <TrendingUp size={20} />;
-                    case 'Settings': return <Settings size={20} />;
-                    default: return null;
-                  }
-                };
-
-                return (
-                  <div
-                    key={index}
-                    className="sidebar-item"
-                    onClick={() => {
-                      window.location.href = item.path;  // ← navigateではなくこれを使う
-                      setSidebarOpen(false);
-                    }}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <span className="sidebar-icon">
-                      {getIcon(item.icon)}
-                    </span>
-                    <span className="sidebar-label">{item.label}</span>
-                  </div>
-                );
-              })}
-          </nav>
-          <div className="sidebar-footer">
-            <div className="user-info">
-              <span>{user.name}</span>
-              <span className="user-role">{user.role === 'master' ? 'マスター' : 'スタッフ'}</span>
-            </div>
-            <button onClick={handleLogout} className="logout-btn">
+              .map((item, index) => (
+                <MenuItem
+                  key={index}
+                  onClick={() => {
+                    window.location.href = item.path;
+                    setSidebarOpen(false);
+                  }}
+                  style={{ cursor: 'pointer', padding: '15px 20px' }}
+                >
+                  {item.label}
+                </MenuItem>
+              ))}
+          </Menu>
+          
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            width: '100%',
+            padding: '20px',
+            borderTop: '1px solid #eee'
+          }}>
+            <div>{user.name}</div>
+            <div>{user.role === 'master' ? 'マスター' : 'スタッフ'}</div>
+            <button 
+              onClick={handleLogout}
+              style={{
+                marginTop: '10px',
+                padding: '10px 20px',
+                background: '#dc3545',
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+                width: '100%'
+              }}
+            >
               ログアウト
             </button>
           </div>
-        </div>
+        </ProSidebar>
       </>
     );
   };
 
   const MainLayout = ({ children }: { children: React.ReactNode }) => {
-    const mainContentStyle = {
-      marginLeft: '0',
-      marginTop: '60px',
-      transition: 'none',
-      minHeight: 'calc(100vh - 60px)',
-      padding: '20px',
-      backgroundColor: '#f5f5f5',
-      width: '100%',
-      maxWidth: 'none',
-      position: 'relative' as const,
-      zIndex: 1
-    };
-
     return (
       <div className="app-layout">
-        <div className="app-header">
+        <div className="app-header" style={{ zIndex: 1001 }}>
           <button 
             className="hamburger-menu"
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -342,11 +306,17 @@ function App() {
           </div>
         </div>
         
-        {user && (
-          <Sidebar user={user} />
-        )}
+        {user && <Sidebar user={user} />}
         
-        <main style={mainContentStyle}>
+        <main style={{
+          marginLeft: '0',
+          marginTop: '60px',
+          minHeight: 'calc(100vh - 60px)',
+          padding: '20px',
+          backgroundColor: '#f5f5f5',
+          position: 'relative',
+          zIndex: 1
+        }}>
           {securityAlert && (
             <div className="security-alert">
               <span>{securityAlert}</span>
@@ -367,26 +337,8 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route
-            path="/login"
-            element={
-              user ? (
-                <Navigate to="/dashboard" replace />
-              ) : (
-                <Login onLogin={handleLogin} securityAlert={securityAlert} />
-              )
-            }
-          />
-          <Route
-            path="/"
-            element={
-              user ? (
-                <Navigate to="/dashboard" replace />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
+          <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <Login onLogin={handleLogin} securityAlert={securityAlert} />} />
+          <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />} />
           {user && (
             <>
               <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />

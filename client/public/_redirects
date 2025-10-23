@@ -1,0 +1,6 @@
+# Netlify/Vercel redirects for API calls
+/api/* https://karusaku-emr-backend.onrender.com/api/:splat 200
+
+
+
+

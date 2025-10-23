@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import TreatmentRecord from './TreatmentRecord';
 import config from '../config';
 
@@ -189,6 +189,25 @@ const PatientDetail: React.FC = () => {
     transition: 'background-color 0.2s'
   }}
 >
+<Link 
+  to={`/patients/${id}/edit`} 
+  style={{
+    display: 'block',
+    width: '100%',
+    padding: '12px',
+    marginBottom: '10px',
+    backgroundColor: '#27ae60',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    fontSize: '16px',
+    textAlign: 'center',
+    textDecoration: 'none',
+    cursor: 'pointer'
+  }}
+>
+  この患者を編集
+</Link>
   この患者を削除
 </button>
         </div>
