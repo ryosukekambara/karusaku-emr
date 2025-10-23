@@ -147,6 +147,30 @@ app.post('/api/patients', authenticateToken, async (req, res) => {
   }
 });
 
+// 患者情報更新API
+app.put('/api/patients/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies } = req.body;
+  
+  try {
+    const [result] = await pool.execute(
+      `UPDATE patients 
+       SET name = ?, kana = ?, birth_date = ?, gender = ?, phone = ?, email = ?, address = ?, emergency_contact = ?, medical_history = ?, allergies = ?
+       WHERE id = ?`,
+      [name, kana, birth_date, gender, phone, email, address, emergency_contact, medical_history, allergies, id]
+    );
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: '患者が見つかりません' });
+    }
+    
+    res.json({ id, message: '患者情報が正常に更新されました' });
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'データベースエラー' });
+  }
+});
+
 // 施術記録API
 app.get('/api/medical-records', authenticateToken, async (req, res) => {
   try {
