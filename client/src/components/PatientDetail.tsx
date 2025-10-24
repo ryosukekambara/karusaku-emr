@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import TreatmentRecord from './TreatmentRecord';
-import config from '../config';
+import config from '../config/api';
 
 interface Patient {
   id: number;
