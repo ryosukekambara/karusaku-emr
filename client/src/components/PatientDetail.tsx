@@ -49,7 +49,7 @@ const PatientDetail: React.FC = () => {
 
       setLoading(true);
 
-      const patientResponse = await fetch(`${config.apiBaseUrl}/api/patients/${id}`, {
+      const patientResponse = await fetch(`${config.baseURL}/api/patients/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -62,7 +62,7 @@ const PatientDetail: React.FC = () => {
       const patientData = await patientResponse.json();
       setPatient(patientData);
 
-      const recordsResponse = await fetch(`${config.apiBaseUrl}/api/patients/${id}/records`, {
+      const recordsResponse = await fetch(`${config.baseURL}/api/patients/${id}/records`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -89,7 +89,7 @@ const PatientDetail: React.FC = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`${config.apiBaseUrl}/api/patients/${id}`, {
+      const response = await fetch(`${config.baseURL}/api/patients/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
