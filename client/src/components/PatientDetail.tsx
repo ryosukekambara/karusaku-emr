@@ -39,11 +39,48 @@ const PatientDetail: React.FC = () => {
       const token = localStorage.getItem('token');
       
       // 顧客情報を取得
-      const patientResponse = await fetch(`/api/patients/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      import config from '../config/api';
+
+const PatientDetail = () => {
+  // ...
+
+  useEffect(() => {
+    const fetchPatient = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        
+        // config.apiBaseUrl を使用
+        const response = await fetch(`${config.apiBaseUrl}/api/patients/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('患者情報の取得に失敗しました');
+        }
+
+        const data = await response.json();
+        setPatient(data);
+      } catch (error) {
+        console.error('Error:', error);
+        setError('患者情報の取得に失敗しました');
+      }
+    };
+
+    fetchPatient();
+  }, [id]);
+
+  // カルテ履歴を取得する部分も同様に修正
+  const fetchMedicalRecords = async () => {
+    const response = await fetch(`${config.apiBaseUrl}/api/patients/${id}/records`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    // ...
+  };
+};
 
       if (!patientResponse.ok) {
         throw new Error('顧客情報の取得に失敗しました');
