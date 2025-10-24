@@ -171,6 +171,67 @@ app.put('/api/patients/:id', authenticateToken, async (req, res) => {
   }
 });
 
+// 患者詳細取得API
+app.get('/api/patients/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    const [rows] = await pool.execute(
+      'SELECT * FROM patients WHERE id = ?',
+      [id]
+    );
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ error: '患者が見つかりません' });
+    }
+    
+    res.json(rows[0]);
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'データベースエラー' });
+  }
+});
+
+// 患者の前回カルテ取得API
+app.get('/api/patients/:id/last-record', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    const [rows] = await pool.execute(
+      `SELECT mr.*, u.name as therapist_name 
+       FROM medical_records mr
+       LEFT JOIN users u ON mr.staff_id = u.id
+       WHERE mr.patient_id = ?
+       ORDER BY mr.treatment_date DESC, mr.created_at DESC
+       LIMIT 1`,
+      [id]
+    );
+    
+    if (rows.length === 0) {
+      return res.json({});
+    }
+    
+    res.json(rows[0]);
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'データベースエラー' });
+  }
+
+// 施術者一覧取得API
+app.get('/api/therapists', authenticateToken, async (req, res) => {
+  try {
+    const [rows] = await pool.execute(
+      'SELECT id, name, department FROM users WHERE role = ? ORDER BY name',
+      ['staff']
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'データベースエラー' });
+  }
+});
+});
+
 // 施術記録API
 app.get('/api/medical-records', authenticateToken, async (req, res) => {
   try {
@@ -191,6 +252,25 @@ app.get('/api/medical-records', authenticateToken, async (req, res) => {
 app.post('/api/medical-records', authenticateToken, async (req, res) => {
   const { patient_id, treatment_date, treatment_type, symptoms, diagnosis, treatment_content, notes } = req.body;
 
+
+// 患者別カルテ作成API
+app.post('/api/patients/:id/records', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { therapist_id, visit_date, symptoms, diagnosis, treatment, notes } = req.body;
+  
+  try {
+    const [result] = await pool.execute(
+      `INSERT INTO medical_records (patient_id, staff_id, treatment_date, symptoms, diagnosis, treatment_content, notes)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [id, therapist_id || req.user.id, visit_date, symptoms, diagnosis, treatment, notes]
+    );
+    
+    res.json({ id: result.insertId, message: 'カルテが正常に作成されました' });
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'データベースエラー' });
+  }
+});
   try {
     const [result] = await pool.execute(
       `INSERT INTO medical_records (patient_id, staff_id, treatment_date, treatment_type, symptoms, diagnosis, treatment_content, notes)
