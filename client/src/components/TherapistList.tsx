@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import { Link } from 'react-router-dom';
 
 interface Therapist {
@@ -24,7 +25,7 @@ const TherapistList: React.FC = () => {
   const fetchTherapists = async () => {
     try {
       const token = localStorage.getItem('token') || 'demo-token';
-      const response = await fetch('https://karusaku-emr-aeza.onrender.com/api/therapists', {
+      const response = await fetch('${config.baseURL}/api/therapists', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -54,7 +55,7 @@ const TherapistList: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token') || 'demo-token';
-      const response = await fetch(`https://karusaku-emr-aeza.onrender.com/api/therapists/${id}`, {
+      const response = await fetch(`${config.baseURL}/api/therapists/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

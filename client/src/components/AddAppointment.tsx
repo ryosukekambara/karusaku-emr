@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import { useNavigate } from 'react-router-dom';
 import './AddAppointment.css';
 
@@ -47,7 +48,7 @@ const AddAppointment: React.FC = () => {
   const fetchPatients = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/patients', {
+      const response = await fetch(`${config.baseURL}/api/patients`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -65,7 +66,7 @@ const AddAppointment: React.FC = () => {
   const fetchTherapists = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/therapists', {
+      const response = await fetch(`${config.baseURL}/api/therapists`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -100,7 +101,7 @@ const AddAppointment: React.FC = () => {
       const token = localStorage.getItem('token');
       const appointmentDateTime = `${formData.appointment_date}T${formData.appointment_time}`;
       
-      const response = await fetch('/api/appointments', {
+      const response = await fetch(`${config.baseURL}/api/appointments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

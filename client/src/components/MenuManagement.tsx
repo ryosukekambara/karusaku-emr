@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 
 interface Menu {
   id: number;
@@ -31,7 +32,7 @@ const MenuManagement: React.FC = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/menus', {
+      const response = await fetch('${config.baseURL}/api/menus', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -66,7 +67,7 @@ const MenuManagement: React.FC = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/menus', {
+      const response = await fetch('${config.baseURL}/api/menus', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,7 +103,7 @@ const MenuManagement: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/menus/${menuId}`, {
+      const response = await fetch(`${config.baseURL}/api/menus/${menuId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

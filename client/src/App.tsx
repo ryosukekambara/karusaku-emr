@@ -30,7 +30,6 @@ import MessageTemplateEditor from './components/MessageTemplateEditor';
 import LineBotManagement from './components/LineBotManagement';
 import { sessionManager } from './utils/security';
 
-const API_BASE_URL = apiConfig.baseURL;
 
 interface User {
   username: string;
@@ -98,7 +97,7 @@ function App() {
 
   const handleLogin = async (username: string, password: string) => {
     try {
-      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, {
+      const response = await fetch(`${apiConfig.baseURL}${API_ENDPOINTS.AUTH.LOGIN}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

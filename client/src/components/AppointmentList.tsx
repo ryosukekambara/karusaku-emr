@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import { Link } from 'react-router-dom';
 import './AppointmentList.css';
 
@@ -25,7 +26,7 @@ const AppointmentList: React.FC = () => {
   const fetchAppointments = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/appointments', {
+      const response = await fetch('${config.baseURL}/api/appointments', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -47,7 +48,7 @@ const AppointmentList: React.FC = () => {
   const updateAppointmentStatus = async (id: number, status: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/appointments/${id}/status`, {
+      const response = await fetch(`${config.baseURL}/api/appointments/${id}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +79,7 @@ const AppointmentList: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/appointments/${id}`, {
+      const response = await fetch(`${config.baseURL}/api/appointments/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

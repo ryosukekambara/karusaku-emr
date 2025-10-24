@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import './EmployeeManagement.css';
 
 interface Employee {
@@ -38,7 +39,7 @@ const EmployeeManagement: React.FC = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/employees', {
+      const response = await fetch('${config.baseURL}/api/employees', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -97,7 +98,7 @@ const EmployeeManagement: React.FC = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/employees', {
+      const response = await fetch('${config.baseURL}/api/employees', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

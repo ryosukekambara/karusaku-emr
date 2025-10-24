@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import './BackupManagement.css';
 
 interface BackupPlan {
@@ -50,8 +51,8 @@ const BackupManagement: React.FC = () => {
       const headers = { 'Authorization': `Bearer ${token}` };
 
       const [plansResponse, usageResponse] = await Promise.all([
-        fetch('/api/backup/plans', { headers }),
-        fetch('/api/backup/usage/demo-clinic', { headers })
+        fetch(`${config.baseURL}/api/backup/plans`, { headers }),
+        fetch(`${config.baseURL}/api/backup/usage/demo-clinic`, { headers })
       ]);
 
       const plansData = await plansResponse.json();
@@ -71,7 +72,7 @@ const BackupManagement: React.FC = () => {
   const upgradePlan = async (plan: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/backup/upgrade-plan', {
+      const response = await fetch(`${config.baseURL}/api/backup/upgrade-plan`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -94,7 +95,7 @@ const BackupManagement: React.FC = () => {
   const setupGoogleDrive = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/backup/setup-google-drive', {
+      const response = await fetch(`${config.baseURL}/api/backup/setup-google-drive`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -120,7 +121,7 @@ const BackupManagement: React.FC = () => {
   const setupEmailBackup = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/backup/setup-email', {
+      const response = await fetch(`${config.baseURL}/api/backup/setup-email`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

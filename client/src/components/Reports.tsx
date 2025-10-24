@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import './Reports.css';
 
 interface MonthlyStats {
@@ -80,28 +81,28 @@ const Reports: React.FC = () => {
       const token = localStorage.getItem('token');
       
       // 月別統計
-      const monthlyResponse = await fetch(`/api/statistics/monthly-trend?months=${selectedPeriod}`, {
+      const monthlyResponse = await fetch(`${config.baseURL}/api/statistics/monthly-trend?months=${selectedPeriod}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
 
       // 施術者別統計
-      const therapistResponse = await fetch('/api/statistics/therapists', {
+      const therapistResponse = await fetch('${config.baseURL}/api/statistics/therapists', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
 
       // 顧客統計
-      const patientResponse = await fetch('/api/statistics/patients', {
+      const patientResponse = await fetch('${config.baseURL}/api/statistics/patients', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
 
       // 予約統計
-      const appointmentResponse = await fetch('/api/statistics/appointments', {
+      const appointmentResponse = await fetch('${config.baseURL}/api/statistics/appointments', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -166,7 +167,7 @@ const Reports: React.FC = () => {
   const generatePDF = async (type: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/reports/${type}/pdf`, {
+      const response = await fetch(`${config.baseURL}/api/reports/${type}/pdf`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import { Lock } from 'lucide-react';
 import './ReceiptManagement.css';
 
@@ -38,7 +39,7 @@ const ReceiptManagement: React.FC = () => {
     try {
       // デモモード用のトークン
           const token = localStorage.getItem('token');
-    const response = await fetch('/api/receipts', {
+    const response = await fetch('${config.baseURL}/api/receipts', {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -84,7 +85,7 @@ const ReceiptManagement: React.FC = () => {
     try {
       // デモモード用のトークン
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/receipts/generate', {
+      const response = await fetch('${config.baseURL}/api/receipts/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -107,7 +108,7 @@ const ReceiptManagement: React.FC = () => {
     try {
       // デモモード用のトークン
           const token = localStorage.getItem('token');
-    const response = await fetch(`/api/receipts/${receiptId}/submit`, {
+    const response = await fetch(`${config.baseURL}/api/receipts/${receiptId}/submit`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,

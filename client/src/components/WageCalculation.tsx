@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import './WageCalculation.css';
 
 interface Employee {
@@ -70,7 +71,7 @@ const WageCalculation: React.FC = () => {
   const fetchEmployees = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/employees', {
+      const response = await fetch('${config.baseURL}/api/employees', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -165,7 +166,7 @@ const WageCalculation: React.FC = () => {
       formData.append('employeeId', selectedEmployee.id.toString());
 
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/ocr/analyze', {
+      const response = await fetch('${config.baseURL}/api/ocr/analyze', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -210,7 +211,7 @@ const WageCalculation: React.FC = () => {
       setError('');
       
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/wage/calculate', {
+      const response = await fetch('${config.baseURL}/api/wage/calculate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

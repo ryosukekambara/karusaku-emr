@@ -1,6 +1,7 @@
 const config = {
     clinicId: process.env.REACT_APP_CLINIC_ID || "clinic001",
-    apiBaseUrl: process.env.REACT_APP_API_URL || "http://localhost:10000",
+    apiBaseUrl: process.env.REACT_APP_API_URL || "https://karusaku-emr-backend.onrender.com",
+    baseURL: process.env.REACT_APP_API_URL || "https://karusaku-emr-backend.onrender.com",
     clinicName: process.env.REACT_APP_CLINIC_NAME || "メインクリニック",
     
     // データファイル名

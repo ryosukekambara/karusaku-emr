@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import { FileText } from 'lucide-react';
 import './MessageTemplateEditor.css';
 
@@ -71,7 +72,7 @@ const MessageTemplateEditor: React.FC = () => {
   const fetchMessageTemplates = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/workflow/message-templates', {
+      const response = await fetch('${config.baseURL}/api/workflow/message-templates', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -102,7 +103,7 @@ const MessageTemplateEditor: React.FC = () => {
   const fetchSalonSettings = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/workflow/salon-settings', {
+      const response = await fetch('${config.baseURL}/api/workflow/salon-settings', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -181,7 +182,7 @@ const MessageTemplateEditor: React.FC = () => {
       setError('');
       
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/workflow/message-templates/${selectedTemplate.id}`, {
+      const response = await fetch(`${config.baseURL}/api/workflow/message-templates/${selectedTemplate.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

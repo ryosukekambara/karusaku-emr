@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import { useParams, useNavigate } from 'react-router-dom';
 
 interface Therapist {
@@ -37,7 +38,7 @@ const EditTherapist: React.FC = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token') || 'demo-token';
-      const response = await fetch(`https://karusaku-emr-aeza.onrender.com/api/therapists/${id}`, {
+      const response = await fetch(`${config.baseURL}/api/therapists/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -80,7 +81,7 @@ const EditTherapist: React.FC = () => {
     
     try {
       const token = localStorage.getItem('token') || 'demo-token';
-      const response = await fetch(`https://karusaku-emr-aeza.onrender.com/api/therapists/${id}`, {
+      const response = await fetch(`${config.baseURL}/api/therapists/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

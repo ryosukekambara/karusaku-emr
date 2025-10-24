@@ -148,7 +148,7 @@ const PatientList: React.FC = () => {
       });
 
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/patients/import-csv', {
+      const response = await fetch('${config.baseURL}/api/patients/import-csv', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

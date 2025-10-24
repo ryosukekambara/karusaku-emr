@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import { BarChart3, FileText, CheckCircle, XCircle, Activity } from 'lucide-react';
 import './LineBotManagement.css';
 
@@ -61,17 +62,17 @@ const LineBotManagement: React.FC = () => {
       const token = localStorage.getItem('token');
       
       // 統計データ取得
-      const statsResponse = await fetch('/api/line-bot/stats', {
+      const statsResponse = await fetch('${config.baseURL}/api/line-bot/stats', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
       // 欠勤報告取得
-      const reportsResponse = await fetch('/api/line-bot/absence-reports', {
+      const reportsResponse = await fetch('${config.baseURL}/api/line-bot/absence-reports', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
       // 代替出勤依頼取得
-      const requestsResponse = await fetch('/api/line-bot/substitute-requests', {
+      const requestsResponse = await fetch('${config.baseURL}/api/line-bot/substitute-requests', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -104,7 +105,7 @@ const LineBotManagement: React.FC = () => {
       setError('');
       
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/line-bot/test/absence-report', {
+      const response = await fetch('${config.baseURL}/api/line-bot/test/absence-report', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

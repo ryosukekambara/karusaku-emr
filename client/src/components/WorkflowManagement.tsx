@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import { Calendar, FileText, CheckCircle } from 'lucide-react';
 import './WorkflowManagement.css';
 
@@ -116,7 +117,7 @@ const WorkflowManagement: React.FC = () => {
   const fetchWorkflowConfig = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/workflow/config', {
+      const response = await fetch('${config.baseURL}/api/workflow/config', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -134,7 +135,7 @@ const WorkflowManagement: React.FC = () => {
   const fetchMessageTemplates = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/workflow/message-templates', {
+      const response = await fetch('${config.baseURL}/api/workflow/message-templates', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -163,7 +164,7 @@ const WorkflowManagement: React.FC = () => {
   const fetchSalonSettings = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/workflow/salon-settings', {
+      const response = await fetch('${config.baseURL}/api/workflow/salon-settings', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -196,7 +197,7 @@ const WorkflowManagement: React.FC = () => {
       setError('');
       
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/workflow/message-templates/${editingTemplate.id}`, {
+      const response = await fetch(`${config.baseURL}/api/workflow/message-templates/${editingTemplate.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -233,7 +234,7 @@ const WorkflowManagement: React.FC = () => {
       setError('');
       
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/workflow/salon-settings', {
+      const response = await fetch('${config.baseURL}/api/workflow/salon-settings', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -262,7 +263,7 @@ const WorkflowManagement: React.FC = () => {
       setError('');
       
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/workflow/test', {
+      const response = await fetch('${config.baseURL}/api/workflow/test', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

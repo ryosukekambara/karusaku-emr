@@ -30,7 +30,7 @@ const MedicalRecordList: React.FC = () => {
   const fetchRecords = async () => {
     try {
       const token = localStorage.getItem('token') || 'demo-token';
-      const response = await fetch('https://karusaku-emr-aeza.onrender.com/api/medical-records', {
+      const response = await fetch('${config.baseURL}/api/medical-records', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -53,7 +53,7 @@ const MedicalRecordList: React.FC = () => {
   const fetchTherapists = async () => {
     try {
       const token = localStorage.getItem('token') || 'demo-token';
-      const response = await fetch('https://karusaku-emr-aeza.onrender.com/api/therapists', {
+      const response = await fetch('${config.baseURL}/api/therapists', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },

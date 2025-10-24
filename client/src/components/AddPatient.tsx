@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import { useNavigate } from 'react-router-dom';
 
 const AddPatient: React.FC = () => {
@@ -153,8 +154,7 @@ const AddPatient: React.FC = () => {
   const fetchMaxId = async () => {
     try {
       const token = localStorage.getItem('token');
-      const API_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr-backend.onrender.com';
-      const response = await fetch(`${API_URL}/api/patients/max-id`, {
+      const response = await fetch(`${config.baseURL}/api/patients/max-id`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -294,14 +294,13 @@ const AddPatient: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const API_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr.onrender.com';
       
       const patientData = {
         ...formData,
         id: customId || suggestedId  // カスタムIDまたは自動ID
       };
       
-      const response = await fetch(`${API_URL}/api/patients`, {
+      const response = await fetch(`${config.baseURL}/api/patients`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

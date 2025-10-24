@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import { useParams, useNavigate } from 'react-router-dom';
 
 interface TreatmentRecordData {
@@ -49,7 +50,7 @@ const TreatmentRecord: React.FC<TreatmentRecordProps> = ({ patientId }) => {
   const fetchPatientData = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/patients/${id}`, {
+      const response = await fetch(`${config.baseURL}/api/patients/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -67,7 +68,7 @@ const TreatmentRecord: React.FC<TreatmentRecordProps> = ({ patientId }) => {
   const fetchTreatmentRecords = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/patients/${id}/treatment-records`, {
+      const response = await fetch(`${config.baseURL}/api/patients/${id}/treatment-records`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -116,7 +117,7 @@ const TreatmentRecord: React.FC<TreatmentRecordProps> = ({ patientId }) => {
         formDataToSend.append('photos', photo);
       });
 
-      const response = await fetch(`/api/patients/${id}/treatment-records`, {
+      const response = await fetch(`${config.baseURL}/api/patients/${id}/treatment-records`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

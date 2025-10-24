@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import './Settings.css';
 
 interface SystemSettings {
@@ -121,7 +122,7 @@ const Settings: React.FC = () => {
   const fetchTherapists = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/therapists', {
+      const response = await fetch('${config.baseURL}/api/therapists', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -139,7 +140,7 @@ const Settings: React.FC = () => {
   const fetchSecurityLogs = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/settings/security-logs', {
+      const response = await fetch('${config.baseURL}/api/settings/security-logs', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },

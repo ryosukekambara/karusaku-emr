@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import './ClinicManagement.css';
 
 interface ClinicInfo {
@@ -47,7 +48,7 @@ const ClinicManagement: React.FC = () => {
   const fetchClinicInfo = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/clinic/info', {
+      const response = await fetch('${config.baseURL}/api/clinic/info', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -83,7 +84,7 @@ const ClinicManagement: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/clinic/info', {
+      const response = await fetch('${config.baseURL}/api/clinic/info', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

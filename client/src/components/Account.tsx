@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import './Account.css';
 
 interface User {
@@ -96,7 +97,7 @@ const Account: React.FC = () => {
   const fetchUserInfo = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/account/profile', {
+      const response = await fetch('${config.baseURL}/api/account/profile', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -127,7 +128,7 @@ const Account: React.FC = () => {
   const fetchSecuritySettings = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/account/security', {
+      const response = await fetch('${config.baseURL}/api/account/security', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -145,7 +146,7 @@ const Account: React.FC = () => {
   const fetchLoginHistory = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/account/login-history', {
+      const response = await fetch('${config.baseURL}/api/account/login-history', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -220,7 +221,7 @@ const Account: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/account/profile', {
+      const response = await fetch('${config.baseURL}/api/account/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -264,7 +265,7 @@ const Account: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/account/password', {
+      const response = await fetch('${config.baseURL}/api/account/password', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -305,7 +306,7 @@ const Account: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/account/security', {
+      const response = await fetch('${config.baseURL}/api/account/security', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -336,7 +337,7 @@ const Account: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/account/logout-all', {
+      const response = await fetch('${config.baseURL}/api/account/logout-all', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

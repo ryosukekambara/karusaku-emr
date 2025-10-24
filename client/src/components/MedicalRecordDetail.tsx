@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
 interface MedicalRecord {
@@ -30,7 +31,7 @@ const MedicalRecordDetail: React.FC = () => {
   const fetchRecord = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/medical-records/${id}`, {
+      const response = await fetch(`${config.baseURL}/api/medical-records/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -57,7 +58,7 @@ const MedicalRecordDetail: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/medical-records/${id}`, {
+      const response = await fetch(`${config.baseURL}/api/medical-records/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/api';
 import { useParams, useNavigate } from 'react-router-dom';
 
 interface MedicalRecord {
@@ -46,7 +47,7 @@ const EditMedicalRecord: React.FC = () => {
   const fetchRecord = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/medical-records/${id}`, {
+      const response = await fetch(`${config.baseURL}/api/medical-records/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -78,7 +79,7 @@ const EditMedicalRecord: React.FC = () => {
   const fetchTherapists = async () => {
     try {
       const token = localStorage.getItem('token') || 'demo-token';
-      const response = await fetch('https://karusaku-emr-aeza.onrender.com/api/therapists', {
+      const response = await fetch('${config.baseURL}/api/therapists', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -108,7 +109,7 @@ const EditMedicalRecord: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token') || 'demo-token';
-      const response = await fetch(`https://karusaku-emr-aeza.onrender.com/api/medical-records/${id}`, {
+      const response = await fetch(`${config.baseURL}/api/medical-records/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

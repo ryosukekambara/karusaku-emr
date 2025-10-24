@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import config from '../config/api';
 import { useNavigate } from 'react-router-dom';
 
 const AddTherapist: React.FC = () => {
@@ -28,7 +29,7 @@ const AddTherapist: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/therapists', {
+      const response = await fetch(`${config.baseURL}/api/therapists`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
