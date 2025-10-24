@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FileText } from 'lucide-react';
+import config from '../config';
 
 interface Therapist {
   id: number;
@@ -52,7 +53,7 @@ const AddMedicalRecord: React.FC = () => {
   const fetchPatientInfo = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/patients/${id}`, {
+      const response = await fetch(`${config.apiBaseUrl}/api/patients/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -64,7 +65,7 @@ const AddMedicalRecord: React.FC = () => {
       }
 
       // 前回の診療記録を取得
-      const lastRecordResponse = await fetch(`/api/patients/${id}/last-record`, {
+      const lastRecordResponse = await fetch(`${config.apiBaseUrl}/api/patients/${id}/last-record`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -87,7 +88,7 @@ const AddMedicalRecord: React.FC = () => {
   const fetchTherapists = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/therapists', {
+      const response = await fetch(`${config.apiBaseUrl}/api/therapists`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -130,7 +131,7 @@ const AddMedicalRecord: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/patients/${id}/records`, {
+      const response = await fetch(`${config.apiBaseUrl}/api/patients/${id}/records`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
