@@ -1,253 +1,274 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import TreatmentRecord from './TreatmentRecord';
+import { User, Calendar, Phone, Mail, MapPin, AlertCircle, FileText, Edit, Trash2 } from 'lucide-react';
 import config from '../config/api';
 
 interface Patient {
   id: number;
   name: string;
-  date_of_birth: string;
+  kana: string;
+  birth_date: string;
   gender: string;
   phone: string;
+  email: string;
   address: string;
   emergency_contact: string;
+  medical_history: string;
+  allergies: string;
   created_at: string;
 }
 
 interface MedicalRecord {
   id: number;
-  visit_date: string;
+  treatment_date: string;
   symptoms: string;
   diagnosis: string;
-  treatment: string;
-  prescription: string;
-  notes: string;
-  doctor_name: string;
-  created_at: string;
+  treatment_content: string;
+  staff_name: string;
 }
 
 const PatientDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [patient, setPatient] = useState<Patient | null>(null);
-  const [, setMedicalRecords] = useState<MedicalRecord[]>([]);
+  const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  const fetchPatientData = useCallback(async () => {
-    try {
-      const token = localStorage.getItem('token');
-      
-      // 顧客情報を取得
-      import config from '../config/api';
-
-const PatientDetail = () => {
-  // ...
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPatient = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        
-        // config.apiBaseUrl を使用
-        const response = await fetch(`${config.apiBaseUrl}/api/patients/${id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('患者情報の取得に失敗しました');
-        }
-
-        const data = await response.json();
-        setPatient(data);
-      } catch (error) {
-        console.error('Error:', error);
-        setError('患者情報の取得に失敗しました');
-      }
-    };
-
-    fetchPatient();
+    fetchPatientData();
   }, [id]);
 
-  // カルテ履歴を取得する部分も同様に修正
-  const fetchMedicalRecords = async () => {
-    const response = await fetch(`${config.apiBaseUrl}/api/patients/${id}/records`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    // ...
-  };
-};
-
-      if (!patientResponse.ok) {
-        throw new Error('顧客情報の取得に失敗しました');
+  const fetchPatientData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
       }
 
-      const patientData = await patientResponse.json();
-      setPatient(patientData);
+      setLoading(true);
 
-      // 診療記録を取得
-      const recordsResponse = await fetch(`/api/patients/${id}/records`, {
+      const patientResponse = await fetch(`${config.apiBaseUrl}/api/patients/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
 
-      if (!recordsResponse.ok) {
-        throw new Error('診療記録の取得に失敗しました');
+      if (!patientResponse.ok) {
+        throw new Error('患者情報の取得に失敗しました');
       }
 
-      const recordsData = await recordsResponse.json();
-      setMedicalRecords(recordsData);
+      const patientData = await patientResponse.json();
+      setPatient(patientData);
+
+      const recordsResponse = await fetch(`${config.apiBaseUrl}/api/patients/${id}/records`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (recordsResponse.ok) {
+        const recordsData = await recordsResponse.json();
+        setMedicalRecords(recordsData);
+      }
+
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'データの取得に失敗しました');
+      console.error('Error fetching patient:', err);
+      setError('患者情報の読み込みに失敗しました');
     } finally {
       setLoading(false);
     }
-  }, [id]);
-
-  useEffect(() => {
-    if (id) {
-      fetchPatientData();
-    }
-  }, [id, fetchPatientData]);
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('ja-JP');
   };
 
   const handleDelete = async () => {
-    if (!patient) return;
-    
-    if (!window.confirm(`${patient.name} を削除してもよろしいですか？\n\nこの操作は取り消せません。関連する施術記録も全て削除されます。`)) {
+    if (!window.confirm('この患者を削除してもよろしいですか？')) {
       return;
     }
-  
+
     try {
       const token = localStorage.getItem('token');
+      
       const response = await fetch(`${config.apiBaseUrl}/api/patients/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
-  
-      if (response.ok) {
-        alert('患者を削除しました');
-        navigate('/patients');
-      } else {
-        alert('削除に失敗しました');
+
+      if (!response.ok) {
+        throw new Error('患者の削除に失敗しました');
       }
-    } catch (error) {
-      console.error('削除エラー:', error);
-      alert('削除に失敗しました');
+
+      alert('患者が削除されました');
+      navigate('/patients');
+    } catch (err) {
+      console.error('Error deleting patient:', err);
+      alert('患者の削除に失敗しました');
     }
   };
 
   if (loading) {
     return (
-      <div className="container">
-        <div className="loading">顧客データを読み込み中...</div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl">読み込み中...</div>
       </div>
     );
   }
 
   if (error || !patient) {
     return (
-      <div className="container">
-        <div className="alert alert-error">
-          {error || '顧客が見つかりません'}
-        </div>
-        <button onClick={() => navigate('/patients')} className="btn">
-          顧客一覧に戻る
-        </button>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl text-red-600">{error || '患者が見つかりません'}</div>
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="container">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <h1>顧客詳細: {patient.name}</h1>
+    <div className="container mx-auto p-6">
+      <div className="mb-6">
+        <button
+          onClick={() => navigate('/patients')}
+          className="text-blue-600 hover:text-blue-800"
+        >
+          ← 患者一覧に戻る
+        </button>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div className="flex justify-between items-start mb-4">
           <div>
-            <button onClick={() => navigate('/patients')} className="btn btn-secondary">
-              戻る
+            <h1 className="text-3xl font-bold mb-2">{patient.name}</h1>
+            <p className="text-gray-600">{patient.kana}</p>
+          </div>
+          <div className="flex gap-2">
+            <Link
+              to={`/patients/${id}/edit`}
+              className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+            >
+              <Edit size={16} />
+              この患者を編集
+            </Link>
+            <button
+              onClick={handleDelete}
+              className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+            >
+              <Trash2 size={16} />
+              削除
             </button>
           </div>
         </div>
 
-        <div className="grid">
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">基本情報</h3>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-center gap-2">
+            <Calendar className="text-gray-400" size={20} />
             <div>
-              <p><strong>顧客ID:</strong> {patient.id}</p>
-              <p><strong>氏名:</strong> {patient.name}</p>
-              <p><strong>生年月日:</strong> {formatDate(patient.date_of_birth)}</p>
-              <p><strong>性別:</strong> {patient.gender}</p>
-              <p><strong>電話番号:</strong> {patient.phone || '未登録'}</p>
-              <p><strong>住所:</strong> {patient.address || '未登録'}</p>
-              <p><strong>緊急連絡先:</strong> {patient.emergency_contact || '未登録'}</p>
-              <p><strong>登録日:</strong> {formatDate(patient.created_at)}</p>
+              <p className="text-sm text-gray-600">生年月日</p>
+              <p className="font-semibold">{patient.birth_date}</p>
             </div>
           </div>
 
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">施術記録</h3>
+          <div className="flex items-center gap-2">
+            <User className="text-gray-400" size={20} />
+            <div>
+              <p className="text-sm text-gray-600">性別</p>
+              <p className="font-semibold">{patient.gender}</p>
             </div>
-            <TreatmentRecord patientId={id} />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Phone className="text-gray-400" size={20} />
+            <div>
+              <p className="text-sm text-gray-600">電話番号</p>
+              <p className="font-semibold">{patient.phone || '-'}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Mail className="text-gray-400" size={20} />
+            <div>
+              <p className="text-sm text-gray-600">メールアドレス</p>
+              <p className="font-semibold">{patient.email || '-'}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 md:col-span-2">
+            <MapPin className="text-gray-400" size={20} />
+            <div>
+              <p className="text-sm text-gray-600">住所</p>
+              <p className="font-semibold">{patient.address || '-'}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 md:col-span-2">
+            <AlertCircle className="text-gray-400" size={20} />
+            <div>
+              <p className="text-sm text-gray-600">緊急連絡先</p>
+              <p className="font-semibold">{patient.emergency_contact || '-'}</p>
+            </div>
           </div>
         </div>
 
-        <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid #e5e7eb' }}>
-        <button 
-  onClick={handleDelete}
-  onTouchEnd={(e) => {
-    e.preventDefault();
-    handleDelete();
-  }}
-  style={{ 
-    backgroundColor: '#dc2626',
-    color: 'white',
-    width: '100%',
-    border: 'none',
-    padding: '12px 16px',
-    borderRadius: '6px',
-    fontSize: '16px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    WebkitTapHighlightColor: 'transparent',  // iOS用
-    transition: 'background-color 0.2s'
-  }}
->
-<Link 
-  to={`/patients/${id}/edit`} 
-  style={{
-    display: 'block',
-    width: '100%',
-    padding: '12px',
-    marginBottom: '10px',
-    backgroundColor: '#27ae60',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    fontSize: '16px',
-    textAlign: 'center',
-    textDecoration: 'none',
-    cursor: 'pointer'
-  }}
->
-  この患者を編集
-</Link>
-  この患者を削除
-</button>
+        {(patient.medical_history || patient.allergies) && (
+          <div className="mt-6 pt-6 border-t">
+            <h3 className="text-lg font-semibold mb-4">医療情報</h3>
+            {patient.medical_history && (
+              <div className="mb-4">
+                <p className="text-sm text-gray-600">既往歴</p>
+                <p className="mt-1">{patient.medical_history}</p>
+              </div>
+            )}
+            {patient.allergies && (
+              <div>
+                <p className="text-sm text-gray-600">アレルギー</p>
+                <p className="mt-1 text-red-600">{patient.allergies}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <FileText size={24} />
+            カルテ履歴
+          </h2>
+          <Link
+            to={`/patients/${id}/records/add`}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
+            新規カルテ作成
+          </Link>
         </div>
+
+        {medicalRecords.length === 0 ? (
+          <p className="text-gray-600">カルテ履歴はありません</p>
+        ) : (
+          <div className="space-y-4">
+            {medicalRecords.map((record) => (
+              <div key={record.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <p className="font-semibold">{record.treatment_date}</p>
+                    <p className="text-sm text-gray-600">担当: {record.staff_name}</p>
+                  </div>
+                  <Link
+                    to={`/records/${record.id}`}
+                    className="text-blue-600 hover:text-blue-800 text-sm"
+                  >
+                    詳細を見る →
+                  </Link>
+                </div>
+                <div className="text-sm">
+                  <p className="mb-1"><span className="font-semibold">症状:</span> {record.symptoms}</p>
+                  <p className="mb-1"><span className="font-semibold">診断:</span> {record.diagnosis}</p>
+                  <p><span className="font-semibold">処置:</span> {record.treatment_content}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
