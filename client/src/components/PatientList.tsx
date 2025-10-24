@@ -41,7 +41,7 @@ const PatientList: React.FC = () => {
       }
       
       // バックエンドAPIから患者データを取得
-      const response = await fetch(`${config.apiBaseUrl}/api/patients`, {
+      const response = await fetch(`${config.baseURL}/api/patients`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
