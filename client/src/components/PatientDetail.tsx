@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { User, Calendar, Phone, Mail, MapPin, AlertCircle, FileText, Edit, Trash2 } from 'lucide-react';
-import config from '../config/api';
+// import config from '../config/api';
 
 interface Patient {
   id: number;
@@ -40,6 +40,7 @@ const PatientDetail: React.FC = () => {
   }, [id]);
 
   const fetchPatientData = async () => {
+const API_URL = "https://karusaku-emr-backend.onrender.com";
     try {
       const token = localStorage.getItem('token');
       if (!token) {
