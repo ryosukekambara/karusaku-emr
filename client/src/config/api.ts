@@ -3,6 +3,7 @@ const API_BASE_URL = 'https://karusaku-emr-backend.onrender.com';
 
 export const apiConfig = {
   baseURL: API_BASE_URL,
+  apiBaseUrl: API_BASE_URL,
   clinicId: process.env.REACT_APP_CLINIC_ID || "clinic001",
   clinicName: process.env.REACT_APP_CLINIC_NAME || "メインクリニック",
   endpoints: {
@@ -41,3 +42,5 @@ export const getAuthHeaders = () => {
 };
 
 export default apiConfig;
+
+console.log('[config/api.ts] baseURL:', apiConfig.baseURL);
