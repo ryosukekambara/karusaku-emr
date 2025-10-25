@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Download, Upload } from 'lucide-react';
-import config from '../config';
+import config from '../config/api';
 
 interface Patient {
   id: number;

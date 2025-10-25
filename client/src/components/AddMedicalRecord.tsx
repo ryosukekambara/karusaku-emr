@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FileText } from 'lucide-react';
-import config from '../config';
+import config from '../config/api';
 
 interface Therapist {
   id: number;
