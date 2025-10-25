@@ -50,7 +50,7 @@ const API_URL = "https://karusaku-emr-backend.onrender.com";
 
       setLoading(true);
 
-      const patientResponse = await fetch(`${config.baseURL}/api/patients/${id}`, {
+      const patientResponse = await fetch(`${API_URL}/api/patients/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -63,7 +63,7 @@ const API_URL = "https://karusaku-emr-backend.onrender.com";
       const patientData = await patientResponse.json();
       setPatient(patientData);
 
-      const recordsResponse = await fetch(`${config.baseURL}/api/patients/${id}/records`, {
+      const recordsResponse = await fetch(`${API_URL}/api/patients/${id}/records`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -90,7 +90,7 @@ const API_URL = "https://karusaku-emr-backend.onrender.com";
     try {
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`${config.baseURL}/api/patients/${id}`, {
+      const response = await fetch(`${API_URL}/api/patients/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
