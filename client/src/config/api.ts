@@ -41,6 +41,9 @@ export const getAuthHeaders = () => {
   };
 };
 
-export default apiConfig;
-
-console.log('[config/api.ts] baseURL:', apiConfig.baseURL);
+// ✅ console.log を export より前に移動！
+console.log('=== [config/api.ts] Loading ===');
+console.log('[config/api.ts] API_BASE_URL:', API_BASE_URL);
+console.log('[config/api.ts] apiConfig.baseURL:', apiConfig.baseURL);
+console.log('[config/api.ts] apiConfig.apiBaseUrl:', apiConfig.apiBaseUrl);
+console.log('===================================');
