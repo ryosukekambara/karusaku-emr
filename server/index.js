@@ -105,7 +105,7 @@ app.post('/api/auth/login', async (req, res) => {
 // 患者管理API
 app.get('/api/patients', authenticateToken, async (req, res) => {
   try {
-    const [rows] = await pool.execute('SELECT * FROM patients ORDER BY created_at DESC');
+    const [rows] = await pool.execute('SELECT * FROM patients WHERE deleted_at IS NULL ORDER BY created_at DESC');
     res.json(rows);
   } catch (error) {
     console.error('Database error:', error);
@@ -429,4 +429,3 @@ app.delete('/api/patients/:id', authenticateToken, async (req, res) => {
   }
 
 });
-
