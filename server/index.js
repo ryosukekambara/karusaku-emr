@@ -9,6 +9,10 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const app = express();
+
+// マイグレーション実行
+const runMigration = require("./migrations/add_deleted_at");
+runMigration().catch(console.error);
 const PORT = process.env.PORT || 3001;
 
 // ミドルウェア
