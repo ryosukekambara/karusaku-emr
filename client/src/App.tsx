@@ -8,7 +8,7 @@ import Dashboard from './components/Dashboard';
 import PatientList from './components/PatientList';
 import AddPatient from './components/AddPatient';
 import EditPatient from './components/EditPatient';
-import PatientDetail from './components/PatientDetail';
+import PatientDetail from "./components/PatientDetail";
 import MedicalRecordList from './components/MedicalRecordList';
 import AddMedicalRecord from './components/AddMedicalRecord';
 import EditMedicalRecord from './components/EditMedicalRecord';

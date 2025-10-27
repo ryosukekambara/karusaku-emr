@@ -181,3 +181,5 @@ const PatientDetail: React.FC = () => {
     </div>
   );
 };
+
+export default PatientDetail;

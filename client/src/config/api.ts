@@ -47,3 +47,4 @@ console.log('[config/api.ts] API_BASE_URL:', API_BASE_URL);
 console.log('[config/api.ts] apiConfig.baseURL:', apiConfig.baseURL);
 console.log('[config/api.ts] apiConfig.apiBaseUrl:', apiConfig.apiBaseUrl);
 console.log('===================================');
+export default apiConfig;
