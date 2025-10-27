@@ -1,9 +1,9 @@
 // API設定
-const API_BASE_URL = 'https://karusaku-emr-backend.onrender.com';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://karusaku-emr-backend.onrender.com';
 
 export const apiConfig = {
   baseURL: API_BASE_URL,
-  apiBaseUrl: API_BASE_URL,
+  apiBaseUrl: API_BASE_URL,  // ← これが必須！
   clinicId: process.env.REACT_APP_CLINIC_ID || "clinic001",
   clinicName: process.env.REACT_APP_CLINIC_NAME || "メインクリニック",
   endpoints: {
@@ -41,10 +41,10 @@ export const getAuthHeaders = () => {
   };
 };
 
-// ✅ console.log を export より前に移動！
 console.log('=== [config/api.ts] Loading ===');
 console.log('[config/api.ts] API_BASE_URL:', API_BASE_URL);
 console.log('[config/api.ts] apiConfig.baseURL:', apiConfig.baseURL);
 console.log('[config/api.ts] apiConfig.apiBaseUrl:', apiConfig.apiBaseUrl);
 console.log('===================================');
+
 export default apiConfig;
