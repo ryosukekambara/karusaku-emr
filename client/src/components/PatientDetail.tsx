@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import config from '../config/api';
+import DeletePatientButton from './DeletePatientButton';
 
 const PatientDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -9,8 +10,15 @@ const PatientDetail: React.FC = () => {
   const [records, setRecords] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+    // ユーザー情報を取得
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      setUser(JSON.parse(userStr));
+    }
+    
     if (id) {
       fetchPatientData();
       fetchMedicalRecords();
@@ -123,6 +131,12 @@ const PatientDetail: React.FC = () => {
             <Link to={`/patients/${id}/records/add`} className="btn btn-success">
               カルテ作成
             </Link>
+            {user?.role === 'master' && (
+              <DeletePatientButton 
+                patientId={id!} 
+                patientName={patient.name || ''} 
+              />
+            )}
           </div>
         </div>
 
