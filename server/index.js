@@ -372,3 +372,57 @@ process.on('SIGINT', async () => {
   }
   process.exit(0);
 });
+// 患者削除API（論理削除）
+
+app.delete('/api/patients/:id', authenticateToken, async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    
+
+    // 権限チェック
+
+    if (req.user.role !== 'master') {
+
+      return res.status(403).json({ error: '削除権限がありません' });
+
+    }
+
+    
+
+    // 論理削除
+
+    const result = await pool.query(
+
+      'UPDATE patients SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL RETURNING id, name',
+
+      [id]
+
+    );
+
+    
+
+    if (result.rows.length === 0) {
+
+      return res.status(404).json({ error: '患者が見つかりません' });
+
+    }
+
+    
+
+    console.log(`Patient deleted: ${result.rows[0].name} (ID: ${id})`);
+
+    res.json({ success: true, message: '患者を削除しました' });
+
+  } catch (error) {
+
+    console.error('削除エラー:', error);
+
+    res.status(500).json({ error: '削除に失敗しました' });
+
+  }
+
+});
+
