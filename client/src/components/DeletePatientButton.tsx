@@ -37,7 +37,7 @@ const DeletePatientButton: React.FC<DeleteButtonProps> = ({ patientId, patientNa
 
         headers: {
 
-          'Authorization': Bearer ${token},
+          'Authorization': `Bearer ${token}`,
 
           'Content-Type': 'application/json'
 
