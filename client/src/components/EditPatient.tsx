@@ -755,4 +755,8 @@ const EditPatient: React.FC = () => {
           </div>
         </form>
       </div>
+    </div>
+  );
+};
+
 export default EditPatient;
