@@ -257,7 +257,7 @@ const PatientList: React.FC = () => {
 
             <Link 
 
-              to={`/patients/${patient.id}}`} 
+            to={`/patients/${patient.id}`}
 
               key={patient.id}
 
