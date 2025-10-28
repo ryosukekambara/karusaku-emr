@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import config from '../config/api';
 import { useNavigate, useParams } from 'react-router-dom';
+import DeletePatientButton from './DeletePatientButton';
 
 const EditPatient: React.FC = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
   const { id } = useParams<{ id: string }>();
   const [customId, setCustomId] = useState('');
   const [suggestedId, setSuggestedId] = useState('');
@@ -149,6 +151,11 @@ const EditPatient: React.FC = () => {
 
   // コンポーネントマウント時に最大IDを取得
   useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      setUser(JSON.parse(userStr));
+    }
+    
     if (id) {
       fetchPatient();
     }
@@ -724,27 +731,27 @@ const EditPatient: React.FC = () => {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-            <button
-              type="submit"
-              className="btn btn-success"
-              disabled={loading}
-            >
-              {loading ? '登録中...' : '顧客を登録'}
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => navigate('/patients')}
-              disabled={loading}
-            >
-              キャンセル
-            </button>
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button
+                type="submit"
+                className="btn btn-success"
+                disabled={loading}
+              >
+                {loading ? '登録中...' : '顧客を登録'}
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => navigate('/patients')}
+                disabled={loading}
+              >
+                キャンセル
+              </button>
+            </div>
+            {user?.role === 'master' && id && (
+              <DeletePatientButton patientId={id} patientName={formData.name} />
+            )}
           </div>
-        </form>
-      </div>
-    </div>
-  );
-};
 
 export default EditPatient;
