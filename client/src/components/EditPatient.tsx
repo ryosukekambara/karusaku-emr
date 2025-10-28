@@ -753,5 +753,6 @@ const EditPatient: React.FC = () => {
               <DeletePatientButton patientId={id} patientName={formData.name} />
             )}
           </div>
-
+        </form>
+      </div>
 export default EditPatient;
