@@ -69,7 +69,7 @@ const PatientList: React.FC = () => {
 
         headers: {
 
-          'Authorization': Bearer ${token},
+          'Authorization': `Bearer ${token}`,
 
           'Content-Type': 'application/json'
 
