@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import config from '../config/api';
-import DeletePatientButton from './DeletePatientButton';
 
 const PatientDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -131,12 +130,6 @@ const PatientDetail: React.FC = () => {
             <Link to={`/patients/${id}/records/add`} className="btn btn-success">
               カルテ作成
             </Link>
-            {user?.role === 'master' && (
-              <DeletePatientButton 
-                patientId={id!} 
-                patientName={patient.name || ''} 
-              />
-            )}
           </div>
         </div>
 

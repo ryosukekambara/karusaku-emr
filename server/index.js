@@ -13,6 +13,9 @@ const app = express();
 // マイグレーション実行
 const runMigration = require("./migrations/add_deleted_at");
 runMigration().catch(console.error);
+const runIsHiddenMigration = require("./migrations/add_is_hidden");
+runIsHiddenMigration().catch(console.error);
+
 const PORT = process.env.PORT || 3001;
 
 // ミドルウェア
@@ -105,10 +108,32 @@ app.post('/api/auth/login', async (req, res) => {
 // 患者管理API
 app.get('/api/patients', authenticateToken, async (req, res) => {
   try {
-    const [rows] = await pool.execute('SELECT * FROM patients WHERE deleted_at IS NULL ORDER BY created_at DESC');
+    const { hidden } = req.query;
+const isHidden = hidden === 'true';
+const [rows] = await pool.execute(
+  'SELECT * FROM patients WHERE deleted_at IS NULL AND is_hidden = ? ORDER BY id ASC',
+  [isHidden]
+);
     res.json(rows);
   } catch (error) {
     console.error('Database error:', error);
+    res.status(500).json({ error: 'データベースエラー' });
+  }
+});
+// 患者の非表示/表示切り替え
+app.patch('/api/patients/:id/hide', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { is_hidden } = req.body;
+    
+    await pool.execute(
+      'UPDATE patients SET is_hidden = ? WHERE id = ?',
+      [is_hidden, id]
+    );
+    
+    res.json({ message: is_hidden ? '患者を非表示にしました' : '患者を表示しました' });
+  } catch (error) {
+    console.error('Error updating patient visibility:', error);
     res.status(500).json({ error: 'データベースエラー' });
   }
 });
